@@ -75,6 +75,7 @@ public class LevelIO {
 			short version = dis.readShort();
 			if (version != LevelIO.VERSION) {
 				System.err.println("Version outdated!");
+				dis.close();
 				return;
 			}
 
