@@ -416,7 +416,7 @@ public class Cubeshaft {
 	 * tells the game how many frames it should try to render per second<br/>
 	 * -1 means no limit
 	 */
-	private static final int FRAMES_PER_SECOND = 100;
+	private static final int FRAMES_PER_SECOND = -1;
 
 	private static final int SHADOW_MAP_SIZE = 2048;
 	private float xLight, yLight, zLight;
@@ -462,6 +462,9 @@ public class Cubeshaft {
 	private PlayerTicking playerTicking = new PlayerTicking();
 
 	private Object hitResultSynchronizer = new Object();
+
+	private FloatBuffer ambient;
+	private FloatBuffer lightPosition;
 
 	public Cubeshaft(Canvas canvas, int width, int height, boolean fullscreen) {
 		this.canvas = canvas;
@@ -529,6 +532,12 @@ public class Cubeshaft {
 			System.out.println("3");
 			glShadeModel(GL_SMOOTH);
 			glClearColor(0.5f, 0.8f, 1.0f, 0);
+			
+			ambient = BufferUtils.createFloatBuffer(4);
+			ambient.put(0, 1.0f).put(1, 1.0f).put(2, 1.0f).put(3, 1.0f).flip();
+			
+			lightPosition = BufferUtils.createFloatBuffer(4);
+			lightPosition.put(1.0f).put(1.0f).put(1.0f).put(0.0f).flip();
 
 			guiText = new TextRenderer("/default.png");
 			startUpWorld();
@@ -641,13 +650,14 @@ public class Cubeshaft {
 			Mouse.setGrabbed(false);
 		setMenu(new PausedGameMenu());
 	}
-
+	
 	private void render(float delta) {
 		if (!Display.isActive())
 			pauseGame();
 		if (loading)
 			return;
-		if (level != null) {
+		if (level != null)
+		{
 			if (inGame) {
 				float dx = 0.0f;
 				float dy = 0.0f;
@@ -673,6 +683,20 @@ public class Cubeshaft {
 					(level.skyColor >> 8 & 0xff) / 255.0f,
 					(level.skyColor & 0xff) / 255.0f, 0);
 
+			ambient.clear();
+			ambient.put((level.skyColor >> 16 & 0xff) / 255.0f)
+			.put((level.skyColor >> 8 & 0xff) / 255.0f)
+			.put((level.skyColor & 0xff) / 255.0f)
+			.put(1.0f).flip();
+			glLight(GL_LIGHT0, GL_AMBIENT, ambient);
+			glLight(GL_LIGHT0, GL_DIFFUSE, ambient);
+			lightPosition.clear();
+			lightPosition.put(xSunPos)
+			.put(ySunPos)
+			.put(zSunPos)
+			.put(0.0f).flip();
+			glLight(GL_LIGHT0, GL_POSITION, lightPosition);	
+			
 			pick(delta);
 
 			glEnable(GL_DEPTH_TEST);
@@ -714,7 +738,7 @@ public class Cubeshaft {
 
 			lightShader.enable();
 			lightShader.bind("comp", 0);
-			lightShader.bind("shadowMap", 7);
+			//lightShader.bind("shadowMap", 7);
 			lightShader.bind("sunAngle", (yLightRot + 450f) % 360 - 90f);
 
 			glClientActiveTexture(GL_TEXTURE0);
@@ -939,6 +963,7 @@ public class Cubeshaft {
 	}
 
 	public void renderShadowMap(float delta) {
+		/*
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
 
 		glColorMask(false, false, false, false);
@@ -968,7 +993,7 @@ public class Cubeshaft {
 
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glColorMask(true, true, true, true);
-		glDisable(GL_POLYGON_OFFSET_FILL);
+		glDisable(GL_POLYGON_OFFSET_FILL);*/
 	}
 
 	private void inverse(FloatBuffer target, FloatBuffer source, float delta) {
