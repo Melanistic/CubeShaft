@@ -141,7 +141,7 @@ public class LevelGenerator {
 			}
 		}
 
-		this.game.setProgressText("Planting..");
+/*		this.game.setProgressText("Planting..");
 		int treeCount = width * depth / 256;
 		for (int i = 0; i < treeCount; i++) {
 			setProgress(i * 100 / (treeCount - 1) / 2);
@@ -190,7 +190,7 @@ public class LevelGenerator {
 					i--;
 			} else
 				i--;
-		}
+		}*/
 
 		// overlay(flyingIslands);
 		// overlay(hell);
