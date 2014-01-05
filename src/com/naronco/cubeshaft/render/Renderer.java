@@ -47,7 +47,7 @@ public class Renderer {
 		glClear(256);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		glOrtho(0.0, game.width, game.height, 0.0, 100.0, 300.0);
+		glOrtho(0.0, game.width, Math.max(1, game.height), 0.0, 100.0, 300.0);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		glTranslatef(0.0f, 0.0f, -200.0f);
