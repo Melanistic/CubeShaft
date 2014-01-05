@@ -36,6 +36,7 @@ public class Inventory {
 	}
 
 	public Tile getSelectedTile() {
+		if(items.size() == 0) return null;
 		return items.get(selectedSlot);
 	}
 

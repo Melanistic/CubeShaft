@@ -363,8 +363,11 @@ public class Cubeshaft {
 						if (player.inventory.selectedSlot > player.inventory
 								.getMaxSpeedSlots() - 1)
 							player.inventory.selectedSlot = 0;
-						selectedTile = player.inventory.getSelectedTile().id;
-						renderer.heldTile.tile = Tile.tiles[selectedTile];
+						if(player.inventory.getSelectedTile() != null)
+						{
+							selectedTile = player.inventory.getSelectedTile().id;
+							renderer.heldTile.tile = Tile.tiles[selectedTile];
+						}
 					}
 
 					player.tick();
