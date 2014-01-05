@@ -349,8 +349,9 @@ public class Cubeshaft {
 								if (Keyboard.getEventKey() == Keyboard.KEY_F)
 									levelRenderer.viewDistance = (levelRenderer.viewDistance + 1) % 4;
 								if (Keyboard.getEventKey() == Keyboard.KEY_Q)
-									player.inventory.items
-											.remove(player.inventory.selectedSlot);
+								{
+									if(player.inventory.items.size() > 0) player.inventory.items.remove(player.inventory.selectedSlot);
+								}
 
 							}
 							ticker.Input(key, Keyboard.getEventCharacter(),
