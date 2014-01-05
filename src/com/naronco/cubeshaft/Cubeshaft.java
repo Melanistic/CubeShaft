@@ -656,8 +656,7 @@ public class Cubeshaft {
 			pauseGame();
 		if (loading)
 			return;
-		if (level != null)
-		{
+		if (level != null) {
 			if (inGame) {
 				float dx = 0.0f;
 				float dy = 0.0f;
@@ -683,7 +682,7 @@ public class Cubeshaft {
 					(level.skyColor >> 8 & 0xff) / 255.0f,
 					(level.skyColor & 0xff) / 255.0f, 0);
 
-			ambient.clear();
+/*			ambient.clear();
 			ambient.put((level.skyColor >> 16 & 0xff) / 255.0f)
 			.put((level.skyColor >> 8 & 0xff) / 255.0f)
 			.put((level.skyColor & 0xff) / 255.0f)
@@ -695,7 +694,7 @@ public class Cubeshaft {
 			.put(ySunPos)
 			.put(zSunPos)
 			.put(0.0f).flip();
-			glLight(GL_LIGHT0, GL_POSITION, lightPosition);	
+			glLight(GL_LIGHT0, GL_POSITION, lightPosition);	*/
 			
 			pick(delta);
 
@@ -738,7 +737,7 @@ public class Cubeshaft {
 
 			lightShader.enable();
 			lightShader.bind("comp", 0);
-			//lightShader.bind("shadowMap", 7);
+			lightShader.bind("shadowMap", 7);
 			lightShader.bind("sunAngle", (yLightRot + 450f) % 360 - 90f);
 
 			glClientActiveTexture(GL_TEXTURE0);
@@ -963,7 +962,6 @@ public class Cubeshaft {
 	}
 
 	public void renderShadowMap(float delta) {
-		/*
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
 
 		glColorMask(false, false, false, false);
@@ -993,7 +991,7 @@ public class Cubeshaft {
 
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glColorMask(true, true, true, true);
-		glDisable(GL_POLYGON_OFFSET_FILL);*/
+		glDisable(GL_POLYGON_OFFSET_FILL);
 	}
 
 	private void inverse(FloatBuffer target, FloatBuffer source, float delta) {
@@ -1179,7 +1177,7 @@ public class Cubeshaft {
 			game.playerTicking.start();
 
 			game.rendering.start();
-			System.out.println("Started");
+			System.out.println("Cubeshaft started successfully");
 
 			game.running = false;
 
