@@ -42,6 +42,7 @@ void main() {
 		shadow = 0.2;
 	
 	col.rgb *= shadow;
+	col.rgb *= 2;
 	
 	gl_FragColor = col;
 }
