@@ -1,10 +1,10 @@
-#version 130
+/*#version 130
 
-uniform sampler2DShadow shadowMap;
+//uniform sampler2DShadow shadowMap;
 uniform sampler2D comp;
 uniform float sunAngle;
 
-in vec4 shadowCoord;
+//in vec4 shadowCoord;
 in vec3 color;
 in float br;
 in vec4 texCoord;
@@ -42,7 +42,16 @@ void main() {
 		shadow = 0.2;
 	
 	col.rgb *= shadow;
-	col.rgb *= 2;
 	
 	gl_FragColor = col;
+}*/
+#version 130
+
+uniform sampler2D comp;
+
+in vec4 texCoord;
+
+void main()
+{
+	gl_FragColor = gl_Color * texture2D(comp, texCoord.st);
 }
