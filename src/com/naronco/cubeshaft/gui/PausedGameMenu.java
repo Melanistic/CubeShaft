@@ -8,14 +8,14 @@ package com.naronco.cubeshaft.gui;
 
 public class PausedGameMenu extends Menu {
 	public void init() {
-		this.buttons.add(new Button(0, this.width / 2 - 200, this.height / 4,
-				400, 40, "Generate new level"));
+		this.buttons.add(new Button(3, this.width / 2 - 200,
+				this.height / 4, 400, 40, "Back to game"));
 		this.buttons.add(new Button(1, this.width / 2 - 200,
 				this.height / 4 + 60, 190, 40, "Save"));
 		this.buttons.add(new Button(2, this.width / 2 + 10,
 				this.height / 4 + 60, 190, 40, "Load"));
-		this.buttons.add(new Button(3, this.width / 2 - 200,
-				this.height / 4 + 180, 400, 40, "Back to game"));
+		this.buttons.add(new Button(0, this.width / 2 - 200, this.height / 4 + 180,
+				400, 40, "Generate new level"));
 	}
 
 	protected void buttonClicked(Button b) {
