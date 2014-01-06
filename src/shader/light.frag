@@ -1,5 +1,7 @@
 #version 130
 
+#define DIFFUSE_CONTRAST 0.8
+
 uniform sampler2DShadow shadowMap;
 uniform sampler2D comp;
 uniform float sunAngle;
@@ -10,25 +12,40 @@ in float br;
 in vec4 texCoord;
 in vec3 lpos, normal;
 
-void main() {
-	vec4 col = texture2D(comp, texCoord.st);
-	col.rgb *= br;
-	
+float getValueWithDiffuseContrastClamping(float val) {
+	return val * DIFFUSE_CONTRAST + (1.0 - DIFFUSE_CONTRAST);
+}
+
+float calcShadowFactor() {
 	float s = dot(lpos.xyz, lpos.xyz) / 2048.0;
 
-	float shadow = 20.0;
+	float shadow = 0.0;
+	float numLoops = 0.0;
 	
-	float smoothfactor = 1.0;
-	
-	for(float y = -.01 * smoothfactor; y <= .01 * smoothfactor; y += 0.0025 * smoothfactor) {
-		for(float x = -.01 * smoothfactor; x <= .01 * smoothfactor; x += 0.0025 * smoothfactor) {
+	for(float y = -.01; y <= .01; y += 0.005) {
+		for(float x = -.01; x <= .01; x += 0.005) {
 			shadow += textureProj(shadowMap, shadowCoord + vec4(x * s, y * s, 0, 0));
+			numLoops += 1.0;
 		}
 	}
-	shadow /= 9.0 * 9.0 + 20.0;
 
-	
-	if(sunAngle < 70 && sunAngle > -10) {
+	return (shadow / numLoops);
+}
+
+float calcDiffuseLighting() {
+	return getValueWithDiffuseContrastClamping(br);
+}
+
+float calcDiffuseLightingWithShadows() {
+	float shadowFactor = calcShadowFactor();
+	float diffuse = br * shadowFactor;
+	return getValueWithDiffuseContrastClamping(diffuse);
+}
+
+void main() {
+	vec4 col = texture2D(comp, texCoord.st);
+
+/*	if(sunAngle < 70 && sunAngle > -10) {
 		float multiplier = 1.0 / 6400.0 * (sunAngle + 10) * (sunAngle + 10) ;
 		shadow *= multiplier;
 	}
@@ -40,8 +57,9 @@ void main() {
 		shadow = 1.0;
 	if(shadow < 0.2)
 		shadow = 0.2;
-	
-	//col.rgb *= shadow;
+*/	
+
+	col.rgb *= calcDiffuseLightingWithShadows();
 	
 	gl_FragColor = col;
 }

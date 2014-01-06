@@ -1,7 +1,5 @@
 #version 130
 
-#define DIFFUSE_CONTRAST 0.8
-
 out vec4 shadowCoord;
 out vec3 color;
 out float br;
@@ -17,7 +15,7 @@ void main() {
 	vec3 vnormal = gl_Normal;
 	
 	lpos = (gl_LightSource[0].position.xyz - vPos.xyz).xyz;
-	br = clamp(dot(vnormal, normalize(vec3(0.5, 1.0, 0.3))), 0.0, 1.0) * DIFFUSE_CONTRAST + (1.0 - DIFFUSE_CONTRAST);
+	br = clamp(dot(vnormal, normalize(vec3(0.5, 1.0, 0.3))), 0.0, 1.0);
 	
 	normal = gl_NormalMatrix * gl_Normal;
 	
