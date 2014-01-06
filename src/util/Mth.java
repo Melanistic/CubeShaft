@@ -7,6 +7,10 @@
 package util;
 
 public class Mth {
+	public static final float PI=3.1415926535897932384626433832f;
+	public static final float PI_TIMES_TWO=2.0f*PI;
+	public static final float PI_OVER_TWO=PI*0.5f;
+	
 	public static float sin(float n) {
 		return (float) Math.sin(n);
 	}

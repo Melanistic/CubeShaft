@@ -184,21 +184,8 @@ public class Cubeshaft {
 								* Math.PI) * 146.0f + level.depth / 2);
 						yLight = (float) (Math.sin(level.time / 3600f * 2f
 								* Math.PI) * 146.0f + level.height * 0.6f);
-						yLightRot = (float) ((Math.atan2(zLight - level.depth
-								/ 2, yLight - level.height / 2) + Math.PI * 0.5f)
-								/ Math.PI * 180.0f);
-						xLightRot = 180;
-
-						zSunPos = (float) (Math.cos(Math.min(
-								1.5 * Math.PI,
-								Math.max(-1.5 * Math.PI, (level.time / 3600f
-										* 2f * Math.PI - 0.5 * Math.PI)
-										* 1.3 + 0.5 * Math.PI))) * 146.0f + level.depth / 2);
-						ySunPos = (float) (Math.sin(Math.min(
-								1.5 * Math.PI,
-								Math.max(-1.5 * Math.PI, (level.time / 3600f
-										* 2f * Math.PI - 0.5 * Math.PI)
-										* 1.3 + 0.5 * Math.PI))) * 146.0f + level.height * 0.6f);
+						sunAngle = (float) (Math.sin(level.time / 3600f * 2f
+								* Math.PI) * 0.5f+0.5f)*180.0f;
 						/*
 						 * try { long neededTime = System.nanoTime() - lastTime;
 						 * long wait = (long) Math.round(1000f /
@@ -419,9 +406,7 @@ public class Cubeshaft {
 	private static final int FRAMES_PER_SECOND = -1;
 
 	private static final int SHADOW_MAP_SIZE = 2048;
-	private float xLight, yLight, zLight;
-	private float xSunPos, ySunPos, zSunPos;
-	private float xLightRot, yLightRot;
+	private float xLight, yLight, zLight, sunAngle;
 	private FloatBuffer lightProjMatrix = BufferUtils.createFloatBuffer(16);
 	private FloatBuffer lightViewMatrix = BufferUtils.createFloatBuffer(16);
 	private FloatBuffer inverseCameraMatrix = BufferUtils.createFloatBuffer(16);
@@ -576,10 +561,6 @@ public class Cubeshaft {
 		xLight = level.width / 2;
 		yLight = 90;
 		zLight = -30;
-		yLightRot = 45;
-		xLightRot = 180;
-
-		xSunPos = level.width / 2;
 
 		depthTexture = glGenTextures();
 		glBindTexture(GL_TEXTURE_2D, depthTexture);
@@ -594,7 +575,7 @@ public class Cubeshaft {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 		glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_MAP_SIZE,
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, SHADOW_MAP_SIZE,
 				SHADOW_MAP_SIZE, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE,
 				(ByteBuffer) null);
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -656,8 +637,7 @@ public class Cubeshaft {
 			pauseGame();
 		if (loading)
 			return;
-		if (level != null)
-		{
+		if (level != null) {
 			if (inGame) {
 				float dx = 0.0f;
 				float dy = 0.0f;
@@ -683,7 +663,7 @@ public class Cubeshaft {
 					(level.skyColor >> 8 & 0xff) / 255.0f,
 					(level.skyColor & 0xff) / 255.0f, 0);
 
-			ambient.clear();
+/*			ambient.clear();
 			ambient.put((level.skyColor >> 16 & 0xff) / 255.0f)
 			.put((level.skyColor >> 8 & 0xff) / 255.0f)
 			.put((level.skyColor & 0xff) / 255.0f)
@@ -695,7 +675,7 @@ public class Cubeshaft {
 			.put(ySunPos)
 			.put(zSunPos)
 			.put(0.0f).flip();
-			glLight(GL_LIGHT0, GL_POSITION, lightPosition);	
+			glLight(GL_LIGHT0, GL_POSITION, lightPosition);	*/
 			
 			pick(delta);
 
@@ -724,11 +704,7 @@ public class Cubeshaft {
 			float y = player.yo + (player.y - player.yo) * delta;
 			float z = player.zo + (player.z - player.zo) * delta;
 			glTranslatef(-x, -y, -z);
-			/*
-			 * glRotatef(yLightRot, 1.0f, 0.0f, 0.0f); glRotatef(xLightRot,
-			 * 0.0f, 1.0f, 0.0f); glTranslatef(-xLight, -yLight, -zLight);
-			 */
-
+			
 			updateChunks();
 
 			FloatBuffer cameraMatrix = BufferUtils.createFloatBuffer(16);
@@ -738,8 +714,8 @@ public class Cubeshaft {
 
 			lightShader.enable();
 			lightShader.bind("comp", 0);
-			//lightShader.bind("shadowMap", 7);
-			lightShader.bind("sunAngle", (yLightRot + 450f) % 360 - 90f);
+			lightShader.bind("shadowMap", 7);
+			lightShader.bind("sunAngle", sunAngle);
 
 			glClientActiveTexture(GL_TEXTURE0);
 			glActiveTexture(GL_TEXTURE0);
@@ -963,15 +939,11 @@ public class Cubeshaft {
 	}
 
 	public void renderShadowMap(float delta) {
-		/*
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
 
 		glColorMask(false, false, false, false);
 		glViewport(0, 0, SHADOW_MAP_SIZE, SHADOW_MAP_SIZE);
 		glClear(GL_DEPTH_BUFFER_BIT);
-
-		glEnable(GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(1.0f, 10.0f);
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
@@ -979,21 +951,19 @@ public class Cubeshaft {
 		glMatrixMode(GL_MODELVIEW);
 
 		glLoadIdentity();
-		glRotatef(yLightRot, 1.0f, 0.0f, 0.0f);
-		glRotatef(xLightRot, 0.0f, 1.0f, 0.0f);
-		glTranslatef(-xLight, -yLight, -zLight);
+		gluLookAt(xLight, yLight, zLight, level.width*0.5f, level.height*0.6f, level.depth*0.5f, 0, 1, 0);
 
 		updateChunks();
 
 		glGetFloat(GL_MODELVIEW_MATRIX, lightViewMatrix);
 		glGetFloat(GL_PROJECTION_MATRIX, lightProjMatrix);
 
-		glDisable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
 		renderSceneShadowMap(delta);
+		glCullFace(GL_BACK);
 
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glColorMask(true, true, true, true);
-		glDisable(GL_POLYGON_OFFSET_FILL);*/
 	}
 
 	private void inverse(FloatBuffer target, FloatBuffer source, float delta) {
@@ -1059,7 +1029,7 @@ public class Cubeshaft {
 		basicColorShader.enable();
 		clouds.render();
 		glColor3f(253 / 255.0f, 184 / 255.0f, 19 / 255.0f);
-		level.sun.render(xSunPos, ySunPos, zSunPos);
+		level.sun.render(xLight, yLight, zLight);
 	}
 
 	public void setProgressTitle(String text) {
@@ -1179,7 +1149,7 @@ public class Cubeshaft {
 			game.playerTicking.start();
 
 			game.rendering.start();
-			System.out.println("Started");
+			System.out.println("Cubeshaft started successfully");
 
 			game.running = false;
 
