@@ -584,6 +584,8 @@ public class Cubeshaft {
 			renderFirstPerson(delta);
 			renderPickBox();
 		}
+		
+		renderGui();
 
 		Display.update();
 	}
