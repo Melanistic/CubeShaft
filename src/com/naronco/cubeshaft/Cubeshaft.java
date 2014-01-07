@@ -157,18 +157,6 @@ public class Cubeshaft {
 							}
 						}
 
-						synchronized (level.tiles) {
-							for (int z = 0; z <= level.depth; z++) {
-								for (int y = 0; y <= level.height; y++) {
-									for (int x = 0; x <= level.width; x++) {
-										if (level.getTile(x, y, z) == Tile.water.id) {
-											Tile.water.tick(level, x, y, z, new Random());
-										}
-									}
-								}
-							}
-						}
-
 						// zLight = (float) (Math.cos(level.time / 3600f * 2f *
 						// Math.PI) * 146.0f + level.depth / 2);
 						// yLight = (float) (Math.sin(level.time / 3600f * 2f *
@@ -176,12 +164,12 @@ public class Cubeshaft {
 						zLight = (float) (Math.cos(Math.toRadians(30.0f)) * 146.0f + level.depth / 2);
 						yLight = (float) (Math.sin(Math.toRadians(30.0f)) * 146.0f + level.height * 0.6f);
 						
-						/*try {
+						try {
 							long neededTime = System.nanoTime() - lastTime;
 							long wait = (long) Math.round(1000f / TICKS_PER_SECOND - neededTime / 1000000f);
 							Thread.sleep(wait > 0 ? wait : 0);
 						} catch (InterruptedException e) {
-						}*/
+						}
 					}
 					
 					ticks++;
@@ -339,16 +327,31 @@ public class Cubeshaft {
 
 	public static Cubeshaft game;
 	public static TickHandler ticker = new TickHandler();
+	
+	/**
+	 * how often the game updates per second
+	 */
 	private static final int TICKS_PER_SECOND = 60;
+	
 	/**
 	 * tells the game how many frames it should try to render per second<br/>
 	 * -1 means no limit
 	 */
 	private static final int FRAMES_PER_SECOND = -1;
 
+	/**
+	 * the tick counter of the game, it counts how often the game is ticked<br/>
+	 * per second. every second it should be TICKS_PER_SECOND
+	 */
 	public static int ticks=0;
 	
+	/**
+	 * the resolution of the shadow map<br/>
+	 * bigger values mean higher quality shadows<br/>
+	 * has to be a 2^x integer
+	 */
 	private static final int SHADOW_MAP_SIZE = 4096;
+	
 	private float yLight, zLight, sunAngle;
 	private Vec3 sunDirection = new Vec3();
 	private FloatBuffer lightProjMatrix = BufferUtils.createFloatBuffer(16);
