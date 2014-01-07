@@ -29,11 +29,12 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
+import util.Vec3;
+
 import com.melanistics.PluginManager;
 import com.melanistics.TickHandler;
 import com.naronco.cubeshaft.gui.Menu;
 import com.naronco.cubeshaft.gui.PausedGameMenu;
-import com.naronco.cubeshaft.gui.StartMenu;
 import com.naronco.cubeshaft.gui.TextRenderer;
 import com.naronco.cubeshaft.level.Chunk;
 import com.naronco.cubeshaft.level.Cloud;
@@ -92,10 +93,11 @@ public class Cubeshaft {
 
 					frames++;
 					while (System.currentTimeMillis() >= lastFrameCountTime + 1000) {
-						debugInfo = frames + " fps, " + Chunk.chunkUpdates + " chunk updates";
+						debugInfo = frames + " fps, " + Chunk.chunkUpdates + " chunk updates, "+Cubeshaft.ticks+" ticks";
 						lastFrameCountTime += 1000;
 						frames = 0;
 						Chunk.chunkUpdates = 0;
+						Cubeshaft.ticks=0;
 					}
 
 					if (FRAMES_PER_SECOND != -1) {
@@ -167,19 +169,24 @@ public class Cubeshaft {
 							}
 						}
 
-						zLight = (float) (Math.cos(level.time / 3600f * 2f * Math.PI) * 146.0f + level.depth / 2);
-						yLight = (float) (Math.sin(level.time / 3600f * 2f * Math.PI) * 146.0f + level.height * 0.6f);
-						sunAngle = (float) (Math.sin(level.time / 3600f * 2f * Math.PI) * 0.5f + 0.5f) * 180.0f;
-						/*
-						 * try { long neededTime = System.nanoTime() - lastTime;
-						 * long wait = (long) Math.round(1000f /
-						 * TICKS_PER_SECOND - neededTime / 1000000f);
-						 * Thread.sleep(wait > 0 ? wait : 0); } catch
-						 * (InterruptedException e) { }
-						 */
+						// zLight = (float) (Math.cos(level.time / 3600f * 2f *
+						// Math.PI) * 146.0f + level.depth / 2);
+						// yLight = (float) (Math.sin(level.time / 3600f * 2f *
+						// Math.PI) * 146.0f + level.height * 0.6f);
+						zLight = (float) (Math.cos(Math.toRadians(30.0f)) * 146.0f + level.depth / 2);
+						yLight = (float) (Math.sin(Math.toRadians(30.0f)) * 146.0f + level.height * 0.6f);
+						
+						/*try {
+							long neededTime = System.nanoTime() - lastTime;
+							long wait = (long) Math.round(1000f / TICKS_PER_SECOND - neededTime / 1000000f);
+							Thread.sleep(wait > 0 ? wait : 0);
+						} catch (InterruptedException e) {
+						}*/
 					}
-					Display.sync(TICKS_PER_SECOND);
-					ticker.Tick();
+					
+					ticks++;
+					
+					//ticker.Tick();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -339,8 +346,11 @@ public class Cubeshaft {
 	 */
 	private static final int FRAMES_PER_SECOND = -1;
 
-	private static final int SHADOW_MAP_SIZE = 2048;
-	private float xLight, yLight, zLight, sunAngle;
+	public static int ticks=0;
+	
+	private static final int SHADOW_MAP_SIZE = 4096;
+	private float yLight, zLight, sunAngle;
+	private Vec3 sunDirection = new Vec3();
 	private FloatBuffer lightProjMatrix = BufferUtils.createFloatBuffer(16);
 	private FloatBuffer lightViewMatrix = BufferUtils.createFloatBuffer(16);
 	private FloatBuffer inverseCameraMatrix = BufferUtils.createFloatBuffer(16);
@@ -490,10 +500,6 @@ public class Cubeshaft {
 		inGame = true;
 		TileRenderer.init(this);
 
-		xLight = level.width / 2;
-		yLight = 90;
-		zLight = -30;
-
 		depthTexture = glGenTextures();
 		glBindTexture(GL_TEXTURE_2D, depthTexture);
 
@@ -553,6 +559,26 @@ public class Cubeshaft {
 		setMenu(new PausedGameMenu());
 	}
 
+	float pickTimeMs = 0.0f;
+	float resetGLTimeMs = 0.0f;
+	float renderShadowMapTimeMs = 0.0f;
+	float renderFirstPersonTimeMs = 0.0f;
+	float renderPickBoxTimeMs = 0.0f;
+
+	int count = 0;
+
+	long begin = 0;
+
+	long lastTime = System.currentTimeMillis();
+
+	void startTimer() {
+		begin = System.currentTimeMillis();
+	}
+
+	float endTimer() {
+		return (System.currentTimeMillis() - begin);
+	}
+
 	private void render(float delta) {
 		if (!Display.isActive()) pauseGame();
 		if (loading) return;
@@ -578,14 +604,39 @@ public class Cubeshaft {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glClearColor((level.skyColor >> 16 & 0xff) / 255.0f, (level.skyColor >> 8 & 0xff) / 255.0f, (level.skyColor & 0xff) / 255.0f, 0);
 
+			startTimer();
 			pick(delta);
+			pickTimeMs = (endTimer() + pickTimeMs) * 0.5f;
+
+			startTimer();
 			resetGL();
+			resetGLTimeMs = (endTimer() + resetGLTimeMs) * 0.5f;
+
+			startTimer();
 			renderShadowMap(delta);
+			renderShadowMapTimeMs = (endTimer() + renderShadowMapTimeMs) * 0.5f;
+
+			startTimer();
 			renderFirstPerson(delta);
+			renderFirstPersonTimeMs = (endTimer() + renderFirstPersonTimeMs) * 0.5f;
+
+			startTimer();
 			renderPickBox();
+			renderPickBoxTimeMs = (endTimer() + renderPickBoxTimeMs) * 0.5f;
 		}
-		
+
 		renderGui();
+
+		if (System.currentTimeMillis() - lastTime > 1000) {
+			System.out.println("##############################################################");
+			System.out.println("Pick Time               : " + pickTimeMs);
+			System.out.println("Reset GL Time           : " + resetGLTimeMs);
+			System.out.println("Render Shadow Map Time  : " + renderShadowMapTimeMs);
+			System.out.println("Render First Person Time: " + renderFirstPersonTimeMs);
+			System.out.println("Render Pick Box Time    : " + renderPickBoxTimeMs);
+			pickTimeMs = resetGLTimeMs = renderShadowMapTimeMs = renderFirstPersonTimeMs = renderPickBoxTimeMs = 0.0f;
+			lastTime += 1000;
+		}
 
 		Display.update();
 	}
@@ -626,7 +677,7 @@ public class Cubeshaft {
 			guiText.drawString(debugInfo, 2, 2, 0xffffff);
 			checkGLError("GUI: Draw text");
 		}
-		
+
 		float xm = width / 2;
 		float ym = height / 2;
 		int r = 7;
@@ -679,10 +730,11 @@ public class Cubeshaft {
 
 		synchronized (hitResultSynchronizer) {
 			hitResult = null;
-			for (int i = 0; i < 512 * 5; i++) {
-				xp -= xa / 512.0;
-				yp -= ya / 512.0;
-				zp -= za / 512.0;
+			float time = 128.0f;
+			for (int i = 0; i < time * 5; i++) {
+				xp -= xa / time;
+				yp -= ya / time;
+				zp -= za / time;
 				int xi = (int) Math.floor(xp);
 				int yi = (int) Math.floor(yp);
 				int zi = (int) Math.floor(zp);
@@ -724,24 +776,33 @@ public class Cubeshaft {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GREATER, 0.0f);
+
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
 	}
+
+	boolean needsUpdate = true;
 
 	public void updateChunks() {
 		FrustumCuller frustumCuller = FrustumCuller.getInstance();
-		for (int i = 0; i < levelRenderer.chunkCache.length; i++) {
-			Chunk c = levelRenderer.chunkCache[i];
-			float viewDist = 256 / (1 << levelRenderer.viewDistance);
-			if (c.distToPlayer(player) < viewDist * viewDist) {
-				c.clip(frustumCuller);
-				if (c.isVisible && !levelRenderer.loadedChunks.contains(c)) levelRenderer.loadedChunks.add(c);
-			}
-			if (c.isDirty && c.isVisible) {
-				c.update();
-			}
-			if (levelRenderer.loadedChunks.contains(c) && (!c.isVisible || c.isDirty)) {
-				levelRenderer.loadedChunks.remove(c);
+
+		if (needsUpdate) {
+			for (int i = 0; i < levelRenderer.chunkCache.length; i++) {
+				Chunk c = levelRenderer.chunkCache[i];
+				float viewDist = 256 / (1 << levelRenderer.viewDistance);
+				if (c.distToPlayer(player) < viewDist * viewDist) {
+					c.clip(frustumCuller);
+					if (c.isVisible && !levelRenderer.loadedChunks.contains(c)) levelRenderer.loadedChunks.add(c);
+				}
+				if (c.isDirty && c.isVisible) {
+					c.update();
+				}
+				if (levelRenderer.loadedChunks.contains(c) && (!c.isVisible || c.isDirty)) {
+					levelRenderer.loadedChunks.remove(c);
+				}
 			}
 		}
+
 		checkGLError("Update chunks");
 	}
 
@@ -752,23 +813,27 @@ public class Cubeshaft {
 		glViewport(0, 0, SHADOW_MAP_SIZE, SHADOW_MAP_SIZE);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
+		glEnable(GL_POLYGON_OFFSET_FILL);
+		glPolygonOffset(1.0f, 10.0f);
+
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		gluPerspective(70, 1, 0.1f, 1000.0f);
+		gluPerspective(90, 1, 1.0f, 1000.0f);
 		glMatrixMode(GL_MODELVIEW);
 
 		glLoadIdentity();
-		gluLookAt(xLight, yLight, zLight, level.width * 0.5f, level.height * 0.6f, level.depth * 0.5f, 0, 1, 0);
-
-		updateChunks();
+		gluLookAt(level.width * 0.5f, yLight, zLight, level.width * 0.5f, level.height * 0.6f, level.depth * 0.5f, 0, 1, 0);
 
 		glGetFloat(GL_MODELVIEW_MATRIX, lightViewMatrix);
 		glGetFloat(GL_PROJECTION_MATRIX, lightProjMatrix);
 
-		glCullFace(GL_FRONT);
+		// glCullFace(GL_FRONT);
+		glDisable(GL_CULL_FACE);
 		renderSceneShadowMap(delta);
-		glCullFace(GL_BACK);
+		glEnable(GL_CULL_FACE);
+		// glCullFace(GL_BACK);
 
+		glDisable(GL_POLYGON_OFFSET_FILL);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glColorMask(true, true, true, true);
 	}
@@ -778,7 +843,7 @@ public class Cubeshaft {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		gluPerspective(70.0f, width / (float) height, 0.05f, 1024.0f);
+		gluPerspective(70.0f, width / (float) height, 0.01f, 512.0f);
 		glMatrixMode(GL_MODELVIEW);
 
 		glLoadIdentity();
@@ -827,11 +892,8 @@ public class Cubeshaft {
 
 		glMatrixMode(GL_MODELVIEW);
 
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-
 		FloatBuffer pos = BufferUtils.createFloatBuffer(4);
-		pos.put(xLight).put(yLight).put(zLight).put(1);
+		pos.put(level.width * 0.5f).put(yLight).put(zLight).put(1);
 		pos.flip();
 		glLight(GL_LIGHT0, GL_POSITION, pos);
 
@@ -842,7 +904,6 @@ public class Cubeshaft {
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_CULL_FACE);
 
 		glClientActiveTexture(GL_TEXTURE0);
 		glActiveTexture(GL_TEXTURE0);
@@ -921,7 +982,7 @@ public class Cubeshaft {
 		basicColorShader.enable();
 		clouds.render();
 		glColor3f(253 / 255.0f, 184 / 255.0f, 19 / 255.0f);
-		level.sun.render(xLight, yLight, zLight);
+		level.sun.render(level.width * 0.5f, yLight, zLight);
 	}
 
 	public void setProgressTitle(String text) {

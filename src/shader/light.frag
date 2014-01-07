@@ -2,6 +2,10 @@
 
 #define DIFFUSE_CONTRAST 0.8
 
+//#define SHADOWS
+//#define SHADOWS_SOFT
+//#define SHADOWS_SMOOTH_EDGES
+
 uniform sampler2DShadow shadowMap;
 uniform sampler2D comp;
 uniform float sunAngle;
@@ -17,19 +21,63 @@ float getValueWithDiffuseContrastClamping(float val) {
 }
 
 float calcShadowFactor() {
-	float s = dot(lpos.xyz, lpos.xyz) / 2048.0;
+#ifdef SHADOWS
+
+	vec4 newShadowCoord = shadowCoord;
+
+#ifdef SHADOWS_SOFT
+	float s = 1.0 / 4096.0;
+
+	float shadow = 0.0;
+	
+	if(shadowCoord.w > 1.0) {
+		float numLoops = 0.0;
+		
+		float time = 1.0;
+		
+		float minmax = 1.0 * time;
+		float inc = 0.25 * time;
+		
+		for(float y = -minmax; y <= minmax; y += inc) {
+			for(float x = -minmax; x <= minmax; x += inc) {
+				shadow += shadow2DProj(shadowMap, newShadowCoord + vec4(x * s, y * s, 0, 0)).x;
+				numLoops += 1.0;
+			}
+		}
+		
+		shadow /= numLoops;
+	}
+	
+	return shadow;
+#elif defined(SHADOWS_SMOOTH_EDGES)
+	float s = 1.0 / 4096.0;
 
 	float shadow = 0.0;
 	float numLoops = 0.0;
 	
-	for(float y = -.01; y <= .01; y += 0.005) {
-		for(float x = -.01; x <= .01; x += 0.005) {
-			shadow += textureProj(shadowMap, shadowCoord + vec4(x * s, y * s, 0, 0));
+	float time = 4.0;
+	
+	float minmax = .01 * time;
+	float inc = .0025 * time;
+	
+	for(float y = -minmax; y <= minmax; y += inc) {
+		for(float x = -minmax; x <= minmax; x += inc) {
+			shadow += textureProj(shadowMap, newShadowCoord + vec4(x * s, y * s, 0, 0));
 			numLoops += 1.0;
 		}
 	}
-
-	return (shadow / numLoops);
+	
+	shadow /= numLoops;
+	shadow = shadow < 0.5 ? 0.0 : 1.0;
+	
+	return shadow;
+#else
+	return textureProj(shadowMap, newShadowCoord);
+#endif
+	
+#else
+	return 1.0;
+#endif
 }
 
 float calcDiffuseLighting() {
@@ -53,13 +101,13 @@ void main() {
 		float multiplier = 1.0 / 6400.0 * (190 - sunAngle) * (190 - sunAngle);
 		shadow *= multiplier;
 	}
-	if(shadow > 1.0)
-		shadow = 1.0;
-	if(shadow < 0.2)
-		shadow = 0.2;
-*/	
-
+*/
 	col.rgb *= calcDiffuseLightingWithShadows();
+	
+//	float colorsPerChannel = 4.0;
+//	col.r = float(int(col.r*colorsPerChannel)/colorsPerChannel);
+//	col.g = float(int(col.g*colorsPerChannel)/colorsPerChannel);
+//	col.b = float(int(col.b*colorsPerChannel)/colorsPerChannel);
 	
 	gl_FragColor = col;
 }
