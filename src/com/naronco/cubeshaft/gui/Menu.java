@@ -24,34 +24,18 @@ public class Menu {
 		for (int i = 0; i < buttons.size(); i++) {
 			Button b = buttons.get(i);
 			if (!b.isClickable) {
-				fill(b.x - 2, b.y - 2, b.x + b.width + 2, b.y + b.height + 2,
-						0xff000000);
+				fill(b.x - 2, b.y - 2, b.x + b.width + 2, b.y + b.height + 2, 0xff000000);
 				fill(b.x, b.y, b.x + b.width, b.y + b.height, 0xff2C2C2C);
-				drawString(b.text,
-						b.x + (b.width - TextRenderer.getTextLength(b.text))
-								/ 2, b.y + (b.height - 16) / 2, 0x5F5F60);
+				drawString(b.text, b.x + (b.width - TextRenderer.getTextLength(b.text)) / 2, b.y + (b.height - 16) / 2, 0x5F5F60);
 			} else {
-				fill(b.x - 2, b.y - 2, b.x + b.width + 2, b.y + b.height + 2,
-						0xff000000);
-				if (xMouse >= b.x && yMouse >= b.y && xMouse < b.x + b.width
-						&& yMouse < b.y + b.height) {
-					fill(b.x - 2, b.y - 2, b.x + b.width + 2, b.y + b.height
-							+ 2, 0xffA0A0A0);
+				fill(b.x - 2, b.y - 2, b.x + b.width + 2, b.y + b.height + 2, 0xff000000);
+				if (xMouse >= b.x && yMouse >= b.y && xMouse < b.x + b.width && yMouse < b.y + b.height) {
+					fill(b.x - 2, b.y - 2, b.x + b.width + 2, b.y + b.height + 2, 0xffA0A0A0);
 					fill(b.x, b.y, b.x + b.width, b.y + b.height, 0xff8080A0);
-					drawString(
-							b.text,
-							b.x
-									+ (b.width - TextRenderer
-											.getTextLength(b.text)) / 2, b.y
-									+ (b.height - 16) / 2, 0xFFFFA0);
+					drawString(b.text, b.x + (b.width - TextRenderer.getTextLength(b.text)) / 2, b.y + (b.height - 16) / 2, 0xFFFFA0);
 				} else {
 					fill(b.x, b.y, b.x + b.width, b.y + b.height, 0xff8F8F90);
-					drawString(
-							b.text,
-							b.x
-									+ (b.width - TextRenderer
-											.getTextLength(b.text)) / 2, b.y
-									+ (b.height - 16) / 2, 0xE0E0E0);
+					drawString(b.text, b.x + (b.width - TextRenderer.getTextLength(b.text)) / 2, b.y + (b.height - 16) / 2, 0xE0E0E0);
 				}
 			}
 		}
@@ -104,22 +88,17 @@ public class Menu {
 		while (Mouse.next())
 			if (Mouse.getEventButtonState()) {
 				int xMouse = Mouse.getEventX() * this.width / this.game.width;
-				int yMouse = this.height - Mouse.getEventY() * this.height
-						/ this.game.height - 1;
+				int yMouse = this.height - Mouse.getEventY() * this.height / this.game.height - 1;
 				int mb = Mouse.getEventButton();
-				if (mb == 0)
-					for (int i = 0; i < buttons.size(); i++) {
-						Button b = buttons.get(i);
-						if (xMouse >= b.x && yMouse >= b.y
-								&& xMouse < b.x + b.width
-								&& yMouse < b.y + b.height) {
-							this.buttonClicked(b);
-						}
+				if (mb == 0) for (int i = 0; i < buttons.size(); i++) {
+					Button b = buttons.get(i);
+					if (xMouse >= b.x && yMouse >= b.y && xMouse < b.x + b.width && yMouse < b.y + b.height) {
+						this.buttonClicked(b);
 					}
+				}
 			}
 		while (Keyboard.next())
-			if (Keyboard.getEventKeyState())
-				keyType(Keyboard.getEventCharacter(), Keyboard.getEventKey());
+			if (Keyboard.getEventKeyState()) keyType(Keyboard.getEventCharacter(), Keyboard.getEventKey());
 	}
 
 	public void tick() {

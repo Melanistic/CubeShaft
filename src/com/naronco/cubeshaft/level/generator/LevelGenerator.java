@@ -9,10 +9,10 @@ package com.naronco.cubeshaft.level.generator;
 import java.util.Random;
 
 import com.naronco.cubeshaft.Cubeshaft;
+import com.naronco.cubeshaft.gui.LevelGenerateMenu;
 import com.naronco.cubeshaft.level.Level;
 import com.naronco.cubeshaft.level.generator.algorithm.CombinedNoiseMap;
 import com.naronco.cubeshaft.level.generator.algorithm.NoiseMap;
-import com.naronco.cubeshaft.level.generator.struct.TreeLevelStruct;
 import com.naronco.cubeshaft.level.tile.Tile;
 
 public class LevelGenerator {
@@ -21,26 +21,20 @@ public class LevelGenerator {
 	private int height;
 	private int depth;
 	private Random random = new Random();
-	private FlyingIslands flyingIslands;
-	private Hell hell;
-	private Level level;
 
 	public LevelGenerator(Cubeshaft game) {
 		this.game = game;
-		flyingIslands = new FlyingIslands(game);
-		hell = new Hell(game);
 	}
 
 	public boolean generate(Level level, int w, int h, int d) {
 		this.game.setProgressTitle("Generating level");
-		this.level = level;
 		level.init(w, h, d, new byte[w * h * d]);
 
 		this.width = w;
 		this.height = h;
 		this.depth = d;
 
-		this.game.setProgressText("Raising..");
+		setProgressText("Raising..");
 
 		NoiseMap noise1 = new NoiseMap(width, depth, 32);
 		NoiseMap noise2 = new NoiseMap(width, depth, 32);
@@ -56,7 +50,7 @@ public class LevelGenerator {
 			}
 		}
 
-		this.game.setProgressText("Soiling..");
+		setProgressText("Soiling..");
 		for (int x = 0; x < width; x++) {
 			setProgress(x * 100 / (width - 1));
 			for (int z = 0; z < depth; z++)
@@ -80,7 +74,7 @@ public class LevelGenerator {
 				}
 		}
 
-		this.game.setProgressText("Watering..");
+		setProgressText("Watering..");
 		for (int x = 0; x < width; x++) {
 			this.setProgress(x * 100 / (width - 1));
 			for (int z = 0; z < depth; z++)
@@ -99,7 +93,7 @@ public class LevelGenerator {
 				}
 		}
 
-		this.game.setProgressText("Carving..");
+		setProgressText("Carving..");
 		int count = width * height * depth / 256 / 64 / 16;
 		for (int i = 0; i < count; i++) {
 			setProgress(i * 100 / (count - 1));
@@ -203,14 +197,14 @@ public class LevelGenerator {
 		game.endLoading();
 		return true;
 	}
-
-	private void setProgress(int progress) {
-		this.game.setProgress(progress);
+	
+	private void setProgressText(String text) {
+		LevelGenerateMenu menu=(LevelGenerateMenu)game.menu;
+		menu.setProgressText(text);
 	}
 
-	public void overlay(LevelSection section) {
-		String loadMessage = section.getLoadMessage();
-		game.setProgressText(loadMessage);
-		section.generate(level, width, height, depth, random);
+	private void setProgress(int progress) {
+		LevelGenerateMenu menu=(LevelGenerateMenu)game.menu;
+		menu.setProgress(progress);
 	}
 }

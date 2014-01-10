@@ -17,7 +17,6 @@ import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.Random;
 
 import javax.swing.JOptionPane;
 
@@ -33,8 +32,10 @@ import util.Vec3;
 
 import com.melanistics.PluginManager;
 import com.melanistics.TickHandler;
+import com.naronco.cubeshaft.gui.LevelGenerateMenu;
 import com.naronco.cubeshaft.gui.Menu;
 import com.naronco.cubeshaft.gui.PausedGameMenu;
+import com.naronco.cubeshaft.gui.StartMenu;
 import com.naronco.cubeshaft.gui.TextRenderer;
 import com.naronco.cubeshaft.level.Chunk;
 import com.naronco.cubeshaft.level.Cloud;
@@ -93,11 +94,11 @@ public class Cubeshaft {
 
 					frames++;
 					while (System.currentTimeMillis() >= lastFrameCountTime + 1000) {
-						debugInfo = frames + " fps, " + Chunk.chunkUpdates + " chunk updates, "+Cubeshaft.ticks+" ticks";
+						debugInfo = frames + " fps, " + Chunk.chunkUpdates + " chunk updates, " + Cubeshaft.ticks + " ticks";
 						lastFrameCountTime += 1000;
 						frames = 0;
 						Chunk.chunkUpdates = 0;
-						Cubeshaft.ticks=0;
+						Cubeshaft.ticks = 0;
 					}
 
 					if (FRAMES_PER_SECOND != -1) {
@@ -163,7 +164,7 @@ public class Cubeshaft {
 						// Math.PI) * 146.0f + level.height * 0.6f);
 						zLight = (float) (Math.cos(Math.toRadians(30.0f)) * 146.0f + level.depth / 2);
 						yLight = (float) (Math.sin(Math.toRadians(30.0f)) * 146.0f + level.height * 0.6f);
-						
+
 						try {
 							long neededTime = System.nanoTime() - lastTime;
 							long wait = (long) Math.round(1000f / TICKS_PER_SECOND - neededTime / 1000000f);
@@ -171,10 +172,10 @@ public class Cubeshaft {
 						} catch (InterruptedException e) {
 						}
 					}
-					
+
 					ticks++;
-					
-					//ticker.Tick();
+
+					// ticker.Tick();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -327,12 +328,12 @@ public class Cubeshaft {
 
 	public static Cubeshaft game;
 	public static TickHandler ticker = new TickHandler();
-	
+
 	/**
 	 * how often the game updates per second
 	 */
 	private static final int TICKS_PER_SECOND = 60;
-	
+
 	/**
 	 * tells the game how many frames it should try to render per second<br/>
 	 * -1 means no limit
@@ -343,15 +344,15 @@ public class Cubeshaft {
 	 * the tick counter of the game, it counts how often the game is ticked<br/>
 	 * per second. every second it should be TICKS_PER_SECOND
 	 */
-	public static int ticks=0;
-	
+	public static int ticks = 0;
+
 	/**
 	 * the resolution of the shadow map<br/>
 	 * bigger values mean higher quality shadows<br/>
 	 * has to be a 2^x integer
 	 */
 	private static final int SHADOW_MAP_SIZE = 4096;
-	
+
 	private float yLight, zLight, sunAngle;
 	private Vec3 sunDirection = new Vec3();
 	private FloatBuffer lightProjMatrix = BufferUtils.createFloatBuffer(16);
@@ -365,8 +366,6 @@ public class Cubeshaft {
 	private Cursor inGameCursor;
 	public TextRenderer guiText;
 	private String debugInfo = "";
-	private String progressTitle = "";
-	private String progressText = "";
 	private boolean loading = false;
 	private Renderer renderer;
 	private Shader lightShader, basicColorShader;
@@ -383,7 +382,7 @@ public class Cubeshaft {
 	public boolean grabMouse = false;
 	private volatile boolean running = false;
 	private int mouseDir = 1;
-	private Menu menu = null;
+	public Menu menu = null;
 	private LevelGenerator generator = new LevelGenerator(this);
 	private boolean inGame = false;
 	private HitResult hitResult;
@@ -444,8 +443,9 @@ public class Cubeshaft {
 				Display.setDisplayMode(new DisplayMode(width, height));
 				Display.setResizable(true);
 			}
+
 			Display.setTitle("Cubeshaft " + version);
-			System.out.println("1");
+
 			try {
 				Display.create();
 			} catch (LWJGLException e) {
@@ -456,12 +456,11 @@ public class Cubeshaft {
 					e1.printStackTrace();
 				}
 				Display.create();
-				System.out.println("Test");
 			}
-			System.out.println("2");
+
 			Keyboard.create();
 			Mouse.create();
-			System.out.println("3");
+
 			glShadeModel(GL_SMOOTH);
 			glClearColor(0.5f, 0.8f, 1.0f, 0);
 
@@ -472,12 +471,12 @@ public class Cubeshaft {
 			lightPosition.put(1.0f).put(1.0f).put(1.0f).put(0.0f).flip();
 
 			guiText = new TextRenderer("/default.png");
-			startUpWorld();
-			regenLevel();
+			init();
 
 			pauseGame();
-			// setMenu(new StartMenu());
-			System.out.println("4");
+
+			setMenu(new StartMenu());
+
 			checkGLError("Post startup");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -488,7 +487,7 @@ public class Cubeshaft {
 		return true;
 	}
 
-	public void startUpWorld() {
+	public void init() {
 		IntBuffer cursorIntBuffer = (IntBuffer) BufferUtils.createIntBuffer(256).clear().limit(256);
 
 		level = new Level();
@@ -988,9 +987,8 @@ public class Cubeshaft {
 		level.sun.render(level.width * 0.5f, yLight, zLight);
 	}
 
-	public void setProgressTitle(String text) {
-		this.progressTitle = text;
-		glClear(256);
+	public void set2D() {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glOrtho(0.0, width, height, 0.0, 100.0, 300.0);
@@ -999,74 +997,18 @@ public class Cubeshaft {
 		glTranslatef(0.0f, 0.0f, -200.0f);
 	}
 
-	public void setProgressText(String text) {
-		this.progressText = text;
-	}
-
-	public void setProgress(int progress) {
-		loading = true;
-		glClear(16640);
-
-		Tesselator t = Tesselator.instance;
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, TextureLoader.load("/terrain.png", GL_NEAREST));
-
-		t.begin();
-		t.color(0x606060);
-		int tileSize = 32;
-		int w = width / tileSize + 1;
-		int h = height / tileSize + 1;
-		Random random = new Random(100);
-		for (int x = 0; x < w; x++)
-			for (int y = 0; y < h; y++) {
-				int xd = Math.abs(x - w / 2);
-				int yd = Math.abs(y - h / 2);
-				int br = 255 - (int) (Math.sqrt(xd * xd + yd * yd) * 15);
-				int col = br << 16 | br << 8 | br;
-				t.color(col);
-				Tile tile = Tile.dirt;
-				if (random.nextInt(3) == 0) tile = Tile.stone;
-				float u0 = (tile.texIndex % 16) / 16.0f;
-				float u1 = u0 + 1.0f / 16.0f;
-				float v0 = (tile.texIndex / 16) / 16.0f;
-				float v1 = v0 + 1.0f / 16.0f;
-				t.vertexUV(x * tileSize, y * tileSize, 0.0f, u0, v0);
-				t.vertexUV(x * tileSize + tileSize, y * tileSize, 0.0f, u1, v0);
-				t.vertexUV(x * tileSize + tileSize, y * tileSize + tileSize, 0.0f, u1, v1);
-				t.vertexUV(x * tileSize, y * tileSize + tileSize, 0.0f, u0, v1);
-			}
-		t.end();
-
-		glDisable(GL_TEXTURE_2D);
-		if (progress >= 0) {
-			int x = width / 2 - 100;
-			int y = height / 2 + 32;
-
-			t.begin();
-			t.color(0x202020);
-			t.vertex(x, y + 4, 0.0f);
-			t.vertex(x, y + 6, 0.0f);
-			t.vertex(x + 200, y + 6, 0.0f);
-			t.vertex(x + 200, y + 4, 0.0f);
-			t.color(0x808080);
-			t.vertex(x, y, 0.0f);
-			t.vertex(x, y + 4, 0.0f);
-			t.vertex(x + 200, y + 4, 0.0f);
-			t.vertex(x + 200, y, 0.0f);
-			t.color(0x00CC00);
-			t.vertex(x, y, 0.0f);
-			t.vertex(x, y + 4, 0.0f);
-			t.vertex(x + progress * 2, y + 4, 0.0f);
-			t.vertex(x + progress * 2, y, 0.0f);
-			t.end();
+	public void clearLevel() {
+		this.level = null;
+		if (this.player != null) {
+			this.player.resetPos();
 		}
-
-		guiText.drawString(progressTitle, (width - TextRenderer.getTextLength(progressTitle)) / 2, height / 2 - 8 - 32, 0xffffff);
-		guiText.drawString(progressText, (width - TextRenderer.getTextLength(progressText)) / 2, height / 2 - 8 + 16, 0xffffff);
-		Display.update();
+		if (levelRenderer != null) levelRenderer.loadedChunks.clear();
+		synchronized (level.entities) {
+			level.entities.clear();
+		}
 	}
 
-	public void regenLevel() {
+	public void generateNewLevel() {
 		this.generator.generate(level, 512, 128, 512);
 		if (this.player != null) {
 			this.player.resetPos();
@@ -1075,16 +1017,27 @@ public class Cubeshaft {
 		synchronized (level.entities) {
 			level.entities.clear();
 		}
-		/*
-		 * for (int i = 0; i < 100; i++) { float x = level.random.nextFloat() *
-		 * level.width; float z = level.random.nextFloat() * level.depth; float
-		 * y = level.height; level.addEntity(new Human(level, textureLoader, x,
-		 * y, z)); }
-		 */
+		setMenu(null);
 	}
 
 	public void endLoading() {
 		loading = false;
+	}
+
+	public void setProgressTitle(String title) {
+		((LevelGenerateMenu) menu).setProgressTitle(title);
+	}
+
+	public void setProgressText(String text) {
+		((LevelGenerateMenu) menu).setProgressText(text);
+	}
+
+	public void setProgress(int progress) {
+		((LevelGenerateMenu) menu).setProgress(progress);
+	}
+
+	public void tryToQuit() {
+		System.exit(0);
 	}
 
 	public static void main(String[] args) {
@@ -1106,5 +1059,4 @@ public class Cubeshaft {
 			game.stop();
 		}
 	}
-
 }
