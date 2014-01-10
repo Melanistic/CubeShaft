@@ -44,36 +44,39 @@ public class LevelGenerator {
 
 		this.game.setProgressText("Raising..");
 
-		/*NoiseMap noise1 = new NoiseMap(width, depth, 32);
-		NoiseMap noise2 = new NoiseMap(width, depth, 32);
-		CombinedNoiseMap noiseMap = new CombinedNoiseMap(noise1, noise2);
+		/*
+		 * NoiseMap noise1 = new NoiseMap(width, depth, 32); NoiseMap noise2 =
+		 * new NoiseMap(width, depth, 32); CombinedNoiseMap noiseMap = new
+		 * CombinedNoiseMap(noise1, noise2);
+		 * 
+		 * int[] heightMap = new int[width * depth]; for (int x = 0; x < width;
+		 * x++) { setProgress(x * 100 / (width - 1)); for (int z = 0; z < depth;
+		 * z++) { heightMap[x + z * width] = (int) ((noiseMap.values[x + z
+		 * width]) 2 + height / 2 - 2); } }
+		 */
 
-		int[] heightMap = new int[width * depth];
-		for (int x = 0; x < width; x++) {
-			setProgress(x * 100 / (width - 1));
-			for (int z = 0; z < depth; z++) {
-				heightMap[x + z * width] = (int) ((noiseMap.values[x + z
-						* width])
-						* 2 + height / 2 - 2);
-			}
-		}*/
-		
-		IGenerator biomeGenerator = new SimplexGenerator(random, 16, 0.5f, 0.005f);
+		IGenerator biomeGenerator = new SimplexGenerator(random, 16, 0.5f,
+				0.005f);
 		Biome[] biomes = new Biome[width * depth];
 		for (int x = 0; x < width; x++) {
 			setProgress(x * 50 / (width - 1));
 			for (int z = 0; z < depth; z++) {
-				biomes[x + z * width] = Biome.getBiome((biomeGenerator.Generate(x, z, Biome.None) + 1) * 0.5f);
+				biomes[x + z * width] = Biome.getBiome(biomeGenerator.Generate(
+						x, z, Biome.None));
 			}
 		}
-		
-		IGenerator heightmapGenerator = new SimplexGenerator(random, 32, 0.25f, 0.015f);
+
+		IGenerator heightmapGenerator = new SimplexGenerator(random, 32, 0.25f,
+				0.015f);
 		int[] heightMap = new int[width * depth];
-		
+
+		System.out.println("Height: " + height);
+
 		for (int x = 0; x < width; x++) {
 			setProgress(x * 50 / (width - 1) + 50);
 			for (int z = 0; z < depth; z++) {
-				heightMap[x + z * width] = (int)((heightmapGenerator.Generate(x, z, Biome.None) + 1) * 0.5f * height);
+				heightMap[x + z * width] = (int) (heightmapGenerator.Generate(
+						x, z, Biome.None) * height);
 			}
 		}
 
@@ -82,21 +85,29 @@ public class LevelGenerator {
 			setProgress(x * 100 / (width - 1));
 			for (int z = 0; z < depth; z++)
 				for (int y = 0; y < height; y++) {
+					Biome biome = biomes[x + z * width];
 					int hei = heightMap[x + z * width];
-					int shei = hei / 5 * 4;
+					int shei = hei / 6 * 4;
 
 					int tile = 0;
-					if (y == hei && y != height / 2 - 3)
-						tile = Tile.grass.id;
-					else if (y == hei && y == height / 2 - 3)
-						tile = Tile.sand.id;
-					else if (y >= shei && y < hei)
-						tile = Tile.dirt.id;
-					else if (y < shei && y >= shei - 5)
-						tile = random.nextInt(2) == 0 ? Tile.dirt.id
-								: Tile.stone.id;
-					else if (y < shei - 5)
-						tile = Tile.stone.id;
+					if (biome == Biome.Desert) {
+						if (y < hei) tile = Tile.sand.id;
+					} else if (biome == Biome.Water) {
+						if(y < shei) tile = Tile.stone.id;
+						else if(y < 64) tile = Tile.water.id;
+					} else {
+						if (y == hei && y != height / 2 - 3)
+							tile = Tile.grass.id;
+						else if (y == hei && y == height / 2 - 3)
+							tile = Tile.sand.id;
+						else if (y >= shei && y < hei)
+							tile = Tile.dirt.id;
+						else if (y < shei && y >= shei - 5)
+							tile = random.nextInt(2) == 0 ? Tile.dirt.id
+									: Tile.stone.id;
+						else if (y < shei - 5)
+							tile = Tile.stone.id;
+					}
 					level.setTileNoUpdate(x, y, z, tile);
 				}
 		}
@@ -162,56 +173,32 @@ public class LevelGenerator {
 			}
 		}
 
-/*		this.game.setProgressText("Planting..");
-		int treeCount = width * depth / 256;
-		for (int i = 0; i < treeCount; i++) {
-			setProgress(i * 100 / (treeCount - 1) / 2);
-			int x = random.nextInt(width);
-			int z = random.nextInt(depth);
-			int y = heightMap[x + z * width] + 1;
-			new TreeLevelStruct().generate(level, x, y, z, random);
-		}
-		for (int y = 0; y < height; y++) {
-			setProgress(50 + y * 50 / (height - 1));
-			for (int x = 0; x < width; x++)
-				for (int z = 0; z < depth; z++) {
-					int tile = level.getTile(x, y, z);
-					if (tile == Tile.grass.id) {
-						int upperTile = level.getTile(x, y + 1, z);
-						if (upperTile == 0 && random.nextInt(5) == 0)
-							level.setTileNoUpdate(x, y + 1, z,
-									Tile.tallGrass.id);
-					}
-				}
-		}
-/*
-		int bambooCount = width * depth / 256;
-		Random r = new Random();
-		for (int i = 0; i < bambooCount; i++) {
-			setProgress(i * 100 / (bambooCount - 1));
-			int x = random.nextInt(width);
-			int z = random.nextInt(depth);
-			int y = heightMap[x + z * width] + 1;
-			if (level.getTile(x, y - 1, z) == Tile.sand.id) {
-				if ((level.getTile(x, y - 1, z - 1) == Tile.water.id)
-						|| (level.getTile(x, y - 1, z + 1) == Tile.water.id)
-						|| (level.getTile(x - 1, y - 1, z) == Tile.water.id)
-						|| (level.getTile(x + 1, y - 1, z) == Tile.water.id)) {
-					float temp = r.nextFloat() * 4;
-					if (temp >= 0)
-						level.setTileNoUpdate(x, y, z, Tile.bamboo.id);
-					if (temp >= 1)
-						level.setTileNoUpdate(x, y + 1, z, Tile.bamboo.id);
-					if (temp >= 2)
-						level.setTileNoUpdate(x, y + 2, z, Tile.bamboo.id);
-					if (temp >= 3)
-						level.setTileNoUpdate(x, y + 3, z, Tile.bamboo.id);
-					setProgress(i * 100 / (bambooCount - 1));
-				} else
-					i--;
-			} else
-				i--;
-		}*/
+		/*
+		 * this.game.setProgressText("Planting.."); int treeCount = width *
+		 * depth / 256; for (int i = 0; i < treeCount; i++) { setProgress(i *
+		 * 100 / (treeCount - 1) / 2); int x = random.nextInt(width); int z =
+		 * random.nextInt(depth); int y = heightMap[x + z * width] + 1; new
+		 * TreeLevelStruct().generate(level, x, y, z, random); } for (int y = 0;
+		 * y < height; y++) { setProgress(50 + y * 50 / (height - 1)); for (int
+		 * x = 0; x < width; x++) for (int z = 0; z < depth; z++) { int tile =
+		 * level.getTile(x, y, z); if (tile == Tile.grass.id) { int upperTile =
+		 * level.getTile(x, y + 1, z); if (upperTile == 0 && random.nextInt(5)
+		 * == 0) level.setTileNoUpdate(x, y + 1, z, Tile.tallGrass.id); } } } /*
+		 * int bambooCount = width * depth / 256; Random r = new Random(); for
+		 * (int i = 0; i < bambooCount; i++) { setProgress(i * 100 /
+		 * (bambooCount - 1)); int x = random.nextInt(width); int z =
+		 * random.nextInt(depth); int y = heightMap[x + z * width] + 1; if
+		 * (level.getTile(x, y - 1, z) == Tile.sand.id) { if ((level.getTile(x,
+		 * y - 1, z - 1) == Tile.water.id) || (level.getTile(x, y - 1, z + 1) ==
+		 * Tile.water.id) || (level.getTile(x - 1, y - 1, z) == Tile.water.id)
+		 * || (level.getTile(x + 1, y - 1, z) == Tile.water.id)) { float temp =
+		 * r.nextFloat() * 4; if (temp >= 0) level.setTileNoUpdate(x, y, z,
+		 * Tile.bamboo.id); if (temp >= 1) level.setTileNoUpdate(x, y + 1, z,
+		 * Tile.bamboo.id); if (temp >= 2) level.setTileNoUpdate(x, y + 2, z,
+		 * Tile.bamboo.id); if (temp >= 3) level.setTileNoUpdate(x, y + 3, z,
+		 * Tile.bamboo.id); setProgress(i * 100 / (bambooCount - 1)); } else
+		 * i--; } else i--; }
+		 */
 
 		// overlay(flyingIslands);
 		// overlay(hell);
