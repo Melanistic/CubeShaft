@@ -12,10 +12,10 @@ void main() {
 	
 	color = vec3(1, 1, 1);
 	
-	vec3 vnormal = gl_Normal;
+	vec3 vnormal = gl_NormalMatrix*gl_Normal;
 	
 	lpos = (gl_LightSource[0].position.xyz - vPos.xyz).xyz;
-	br = clamp(dot(vnormal, normalize(vec3(0.5, 1.0, 0.3))), 0.0, 1.0);
+	br = clamp(dot(vnormal, normalize(lpos)), 0.0, 1.0);
 	
 	normal = gl_NormalMatrix * gl_Normal;
 	

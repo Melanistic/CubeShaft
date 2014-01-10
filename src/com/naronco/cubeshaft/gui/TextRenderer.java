@@ -44,8 +44,7 @@ public class TextRenderer {
 				}
 				xo--;
 			}
-			if (i == 32)
-				cw = 12;
+			if (i == 32) cw = 12;
 			charWidth[i] = cw;
 		}
 		this.texture = TextureLoader.load(filename, GL_NEAREST);
@@ -61,8 +60,7 @@ public class TextRenderer {
 
 	public void drawString(String text, int x, int y, int color, boolean dark) {
 		char[] chars = text.toCharArray();
-		if (dark)
-			color = (color & 0xfcfcfc) >> 2;
+		if (dark) color = (color & 0xfcfcfc) >> 2;
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -84,48 +82,32 @@ public class TextRenderer {
 				color = r << 16 | g << 8 | b;
 
 				j += 2;
-				if (dark)
-					color = (color & 0xfcfcfc) >> 1;
+				if (dark) color = (color & 0xfcfcfc) >> 1;
 			}
 			int xTex = chars[j] % 16 << 4;
 			int yTex = chars[j] / 16 << 4;
-			if (!dark)
-				t.color((color & 0xfcfcfc) / 2);
-			t.vertexUV(x + xOffs + 1, y + 16, 0.0f, xTex / 256.0f,
-					(yTex + 16) / 256.0f);
-			t.vertexUV(x + xOffs + 17, y + 16, 0.0f, (xTex + 16) / 256.0f,
-					(yTex + 16) / 256.0f);
-			t.vertexUV(x + xOffs + 17, y, 0.0f, (xTex + 16) / 256.0f,
-					yTex / 256.0f);
+			if (!dark) t.color((color & 0xfcfcfc) / 2);
+			t.vertexUV(x + xOffs + 1, y + 16, 0.0f, xTex / 256.0f, (yTex + 16) / 256.0f);
+			t.vertexUV(x + xOffs + 17, y + 16, 0.0f, (xTex + 16) / 256.0f, (yTex + 16) / 256.0f);
+			t.vertexUV(x + xOffs + 17, y, 0.0f, (xTex + 16) / 256.0f, yTex / 256.0f);
 			t.vertexUV(x + xOffs + 1, y, 0.0f, xTex / 256.0f, yTex / 256.0f);
 
-			if (!dark)
-				t.color((color & 0xfcfcfc) / 2);
-			t.vertexUV(x + xOffs + 1, y + 17, 0.0f, xTex / 256.0f,
-					(yTex + 16) / 256.0f);
-			t.vertexUV(x + xOffs + 17, y + 17, 0.0f, (xTex + 16) / 256.0f,
-					(yTex + 16) / 256.0f);
-			t.vertexUV(x + xOffs + 17, y + 1, 0.0f, (xTex + 16) / 256.0f,
-					yTex / 256.0f);
+			if (!dark) t.color((color & 0xfcfcfc) / 2);
+			t.vertexUV(x + xOffs + 1, y + 17, 0.0f, xTex / 256.0f, (yTex + 16) / 256.0f);
+			t.vertexUV(x + xOffs + 17, y + 17, 0.0f, (xTex + 16) / 256.0f, (yTex + 16) / 256.0f);
+			t.vertexUV(x + xOffs + 17, y + 1, 0.0f, (xTex + 16) / 256.0f, yTex / 256.0f);
 			t.vertexUV(x + xOffs + 1, y + 1, 0.0f, xTex / 256.0f, yTex / 256.0f);
 
-			if (!dark)
-				t.color((color & 0xfcfcfc) / 2);
-			t.vertexUV(x + xOffs, y + 17, 0.0f, xTex / 256.0f,
-					(yTex + 16) / 256.0f);
-			t.vertexUV(x + xOffs + 16, y + 17, 0.0f, (xTex + 16) / 256.0f,
-					(yTex + 16) / 256.0f);
-			t.vertexUV(x + xOffs + 16, y + 1, 0.0f, (xTex + 16) / 256.0f,
-					yTex / 256.0f);
+			if (!dark) t.color((color & 0xfcfcfc) / 2);
+			t.vertexUV(x + xOffs, y + 17, 0.0f, xTex / 256.0f, (yTex + 16) / 256.0f);
+			t.vertexUV(x + xOffs + 16, y + 17, 0.0f, (xTex + 16) / 256.0f, (yTex + 16) / 256.0f);
+			t.vertexUV(x + xOffs + 16, y + 1, 0.0f, (xTex + 16) / 256.0f, yTex / 256.0f);
 			t.vertexUV(x + xOffs, y + 1, 0.0f, xTex / 256.0f, yTex / 256.0f);
 
 			t.color(color);
-			t.vertexUV(x + xOffs, y + 16, 0.0f, xTex / 256.0f,
-					(yTex + 16) / 256.0f);
-			t.vertexUV(x + xOffs + 16, y + 16, 0.0f, (xTex + 16) / 256.0f,
-					(yTex + 16) / 256.0f);
-			t.vertexUV(x + xOffs + 16, y, 0.0f, (xTex + 16) / 256.0f,
-					yTex / 256.0f);
+			t.vertexUV(x + xOffs, y + 16, 0.0f, xTex / 256.0f, (yTex + 16) / 256.0f);
+			t.vertexUV(x + xOffs + 16, y + 16, 0.0f, (xTex + 16) / 256.0f, (yTex + 16) / 256.0f);
+			t.vertexUV(x + xOffs + 16, y, 0.0f, (xTex + 16) / 256.0f, yTex / 256.0f);
 			t.vertexUV(x + xOffs, y, 0.0f, xTex / 256.0f, yTex / 256.0f);
 			xOffs += charWidth[chars[j]];
 		}
@@ -139,10 +121,8 @@ public class TextRenderer {
 		char[] chars = text.toCharArray();
 		int length = 0;
 		for (int i = 0; i < chars.length; i++)
-			if (chars[i] == '&')
-				i++;
-			else
-				length += charWidth[chars[i]];
+			if (chars[i] == '&') i++;
+			else length += charWidth[chars[i]];
 		return length;
 	}
 }

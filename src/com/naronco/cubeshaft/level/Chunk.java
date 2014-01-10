@@ -47,7 +47,6 @@ public class Chunk {
 
 	public final void update() {
 		chunkUpdates++;
-		this.setAllDirty();
 
 		Tesselator t = Tesselator.instance;
 		for (int i = 0; i < 3; i++) {
@@ -70,10 +69,6 @@ public class Chunk {
 			glEndList();
 			this.isDirty = false;
 		}
-	}
-
-	private void setAllDirty() {
-		isDirty = true;
 	}
 
 	public int getRenderList(int index) {
