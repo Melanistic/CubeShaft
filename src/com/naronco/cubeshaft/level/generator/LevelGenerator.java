@@ -11,7 +11,9 @@ import java.util.Random;
 import com.naronco.cubeshaft.Cubeshaft;
 import com.naronco.cubeshaft.level.Level;
 import com.naronco.cubeshaft.level.generator.algorithm.CombinedNoiseMap;
+import com.naronco.cubeshaft.level.generator.algorithm.IGenerator;
 import com.naronco.cubeshaft.level.generator.algorithm.NoiseMap;
+import com.naronco.cubeshaft.level.generator.algorithm.SimplexGenerator;
 import com.naronco.cubeshaft.level.generator.struct.TreeLevelStruct;
 import com.naronco.cubeshaft.level.tile.Tile;
 
@@ -42,7 +44,7 @@ public class LevelGenerator {
 
 		this.game.setProgressText("Raising..");
 
-		NoiseMap noise1 = new NoiseMap(width, depth, 32);
+		/*NoiseMap noise1 = new NoiseMap(width, depth, 32);
 		NoiseMap noise2 = new NoiseMap(width, depth, 32);
 		CombinedNoiseMap noiseMap = new CombinedNoiseMap(noise1, noise2);
 
@@ -53,6 +55,25 @@ public class LevelGenerator {
 				heightMap[x + z * width] = (int) ((noiseMap.values[x + z
 						* width])
 						* 2 + height / 2 - 2);
+			}
+		}*/
+		
+		IGenerator biomeGenerator = new SimplexGenerator(random, 16, 0.5f, 0.005f);
+		Biome[] biomes = new Biome[width * depth];
+		for (int x = 0; x < width; x++) {
+			setProgress(x * 50 / (width - 1));
+			for (int z = 0; z < depth; z++) {
+				biomes[x + z * width] = Biome.getBiome((biomeGenerator.Generate(x, z, Biome.None) + 1) * 0.5f);
+			}
+		}
+		
+		IGenerator heightmapGenerator = new SimplexGenerator(random, 32, 0.25f, 0.015f);
+		int[] heightMap = new int[width * depth];
+		
+		for (int x = 0; x < width; x++) {
+			setProgress(x * 50 / (width - 1) + 50);
+			for (int z = 0; z < depth; z++) {
+				heightMap[x + z * width] = (int)((heightmapGenerator.Generate(x, z, Biome.None) + 1) * 0.5f * height);
 			}
 		}
 
@@ -163,7 +184,7 @@ public class LevelGenerator {
 					}
 				}
 		}
-
+/*
 		int bambooCount = width * depth / 256;
 		Random r = new Random();
 		for (int i = 0; i < bambooCount; i++) {
@@ -190,7 +211,7 @@ public class LevelGenerator {
 					i--;
 			} else
 				i--;
-		}
+		}*/
 
 		// overlay(flyingIslands);
 		// overlay(hell);
