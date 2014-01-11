@@ -36,23 +36,34 @@ public class AIEntitySearch extends AIBase {
 			// if(mob.xd<0.0001&&mob.zd<0.0001)
 			{
 				int rot = (int) Math.round((180.0F + mob.yRot) / 90D);
-				int x = (int) mob.x, y = (int) mob.y, z = (int) mob.z;
+				int x1 = (int) mob.x, y1 = (int) mob.y, z1 = (int) mob.z;
+				int x2 = (int) mob.x, y2 = (int) mob.y, z2 = (int) mob.z;
+				
 				switch (rot) {
-				case (0):
-					x++;
-					break;
-				case (1):
-					z++;
-					break;
-				case (2):
-					z--;
-					break;
-				case (3):
-					x--;
-					break;
+				case (0):x1++;
+						break;
+				case (1):z1++;
+						break;
+				case (2):z1--;
+						break;
+				case (3):x1--;
+						break;
 				}
-				//mob.level.setTile(x, y, z, 1);
-				if (mob.level.getTile(x, y, z) != 0)
+				if((rot*90)>mob.yRot)rot++;
+				if((rot*90)<mob.yRot)rot--;
+				
+				switch (rot) {
+				case (0):x2++;
+						break;
+				case (1):z2++;
+						break;
+				case (2):z2--;
+						break;
+				case (3):x2--;
+						break;
+				}
+				
+				if (mob.level.getTile(x1, y1, z1) != 0 || mob.level.getTile(x2, y2, z2) != 0)
 					mob.jump();
 			}
 		}
