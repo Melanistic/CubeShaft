@@ -11,9 +11,7 @@ import java.util.Random;
 import com.naronco.cubeshaft.Cubeshaft;
 import com.naronco.cubeshaft.gui.LevelGenerateMenu;
 import com.naronco.cubeshaft.level.Level;
-import com.naronco.cubeshaft.level.generator.algorithm.CombinedNoiseMap;
 import com.naronco.cubeshaft.level.generator.algorithm.IGenerator;
-import com.naronco.cubeshaft.level.generator.algorithm.NoiseMap;
 import com.naronco.cubeshaft.level.generator.algorithm.SimplexGenerator;
 import com.naronco.cubeshaft.level.tile.Tile;
 
@@ -26,6 +24,15 @@ public class LevelGenerator {
 
 	public LevelGenerator(Cubeshaft game) {
 		this.game = game;
+	}
+	
+	public int getHeight(int[] heightmap, int x, int y)
+	{
+		if(x < 0) x = 0;
+		if(x >= width) x = width - 1;
+		if(y < 0) y = 0;
+		if(y >= depth) y = depth - 1;
+		return heightmap[x + y * depth];
 	}
 
 	public boolean generate(Level level, int w, int h, int d) {
@@ -55,7 +62,7 @@ public class LevelGenerator {
 		for (int x = 0; x < width; x++) {
 			setProgress(x * 50 / (width - 1));
 			for (int z = 0; z < depth; z++) {
-				biomes[x + z * width] = Biome.getBiome(biomeGenerator.Generate(
+				biomes[x + z * depth] = Biome.getBiome(biomeGenerator.Generate(
 						x, z, Biome.None));
 			}
 		}
@@ -64,13 +71,28 @@ public class LevelGenerator {
 				0.015f);
 		int[] heightMap = new int[width * depth];
 
-		System.out.println("Height: " + height);
-
 		for (int x = 0; x < width; x++) {
 			setProgress(x * 50 / (width - 1) + 50);
 			for (int z = 0; z < depth; z++) {
-				heightMap[x + z * width] = (int) (heightmapGenerator.Generate(
-						x, z, Biome.None) * height);
+				heightMap[x + z * depth] = (int) (heightmapGenerator.Generate(
+						x, z, biomes[x + z * depth]) * height);
+			}
+		}
+
+		setProgressText("Smoothing..");
+		for (int x = 0; x < width; x++) {
+			setProgress(x * 100 / (width - 1));
+			for (int y = 0; y < depth; y++) {
+				int m11 = getHeight(heightMap, x - 1, y - 1);
+				int m12 = getHeight(heightMap, x, y - 1);
+				int m13 = getHeight(heightMap, x + 1, y - 1);
+				int m21 = getHeight(heightMap, x - 1, y);
+				int m22 = getHeight(heightMap, x, y);
+				int m23 = getHeight(heightMap, x + 1, y);
+				int m31 = getHeight(heightMap, x - 1, y + 1);
+				int m32 = getHeight(heightMap, x, y + 1);
+				int m33 = getHeight(heightMap, x + 1, y + 1);
+				heightMap[x + y * depth] = (int)(0.14676266317374237f * m11 + 0.14676266317374237f * m13 + 0.14676266317374237f * m31 + 0.14676266317374237f * m33 + 0.24197072451914536f * m12 + 0.24197072451914536f * m21 + 0.24197072451914536f * m23 + 0.24197072451914536f * m32 + 0.3989422804014327f * m22);
 			}
 		}
 
@@ -81,20 +103,19 @@ public class LevelGenerator {
 				for (int y = 0; y < height; y++) {
 					Biome biome = biomes[x + z * width];
 					int hei = heightMap[x + z * width];
-					int shei = hei / 6 * 4;
+					int shei = (int)(hei / 6.0f * 4);
 
 					int tile = 0;
 					if (biome == Biome.Desert) {
-						if (y < hei) tile = Tile.sand.id;
+						if (y < shei) tile = Tile.sand.id;
 					} else if (biome == Biome.Water) {
 						if(y < shei) tile = Tile.stone.id;
-						else if(y < 64) tile = Tile.water.id;
 					} else {
-						if (y == hei && y != height / 2 - 3)
+						if (y == shei && y != height / 2 - 3)
 							tile = Tile.grass.id;
-						else if (y == hei && y == height / 2 - 3)
+						else if (y == shei && y == height / 2 - 3)
 							tile = Tile.sand.id;
-						else if (y >= shei && y < hei)
+						else if (y >= shei && y < shei)
 							tile = Tile.dirt.id;
 						else if (y < shei && y >= shei - 5)
 							tile = random.nextInt(2) == 0 ? Tile.dirt.id
@@ -103,25 +124,6 @@ public class LevelGenerator {
 							tile = Tile.stone.id;
 					}
 					level.setTileNoUpdate(x, y, z, tile);
-				}
-		}
-
-		setProgressText("Watering..");
-		for (int x = 0; x < width; x++) {
-			this.setProgress(x * 100 / (width - 1));
-			for (int z = 0; z < depth; z++)
-				for (int y = 0; y < height / 2 - 2; y++) {
-					int tile = level.getTile(x, y, z);
-					if (tile == 0)
-						if ((level.getTile(x, y - 1, z - 1) == 0)
-								|| (level.getTile(x, y - 1, z + 1) == 0)
-								|| (level.getTile(x - 1, y - 1, z) == 0)
-								|| (level.getTile(x + 1, y - 1, z) == 0))
-							level.setTileNoUpdate(x, y, z, Tile.flowingWater.id);
-						else
-							level.setTileNoUpdate(x, y, z, Tile.water.id);
-					else if (tile == Tile.grass.id && y < height / 2 - 3)
-						level.setTileNoUpdate(x, y, z, Tile.dirt.id);
 				}
 		}
 
@@ -165,6 +167,25 @@ public class LevelGenerator {
 									level.setTileNoUpdate(x, y, z, 0);
 							}
 			}
+		}
+
+		setProgressText("Watering..");
+		for (int x = 0; x < width; x++) {
+			this.setProgress(x * 100 / (width - 1));
+			for (int z = 0; z < depth; z++)
+				for (int y = 0; y < height / 3 - 2; y++) {
+					int tile = level.getTile(x, y, z);
+					if (tile == 0)
+						if ((level.getTile(x, y - 1, z - 1) == 0)
+								|| (level.getTile(x, y - 1, z + 1) == 0)
+								|| (level.getTile(x - 1, y - 1, z) == 0)
+								|| (level.getTile(x + 1, y - 1, z) == 0))
+							level.setTileNoUpdate(x, y, z, Tile.flowingWater.id);
+						else
+							level.setTileNoUpdate(x, y, z, Tile.water.id);
+					else if (tile == Tile.grass.id && y < height / 2 - 3)
+						level.setTileNoUpdate(x, y, z, Tile.dirt.id);
+				}
 		}
 
 		/*
