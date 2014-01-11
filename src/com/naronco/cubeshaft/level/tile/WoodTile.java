@@ -24,14 +24,4 @@ public class WoodTile extends Tile {
 			return 19;
 		return 18;
 	}
-
-	@Override
-	public void destroy(Level level, int x, int y, int z,
-			ParticleEngine particleEngine) {
-		super.destroy(level, x, y, z, particleEngine);
-		MobSkeleton mob = new MobSkeleton(level);
-
-		mob.setPos(x + 0.5f, y + 1, z + 0.5f);
-		level.entities.add(mob);
-	}
 }
