@@ -24,6 +24,7 @@ public class AIEntitySearch extends AIBase {
 
 	@Override
 	public void task(Mob mob) {
+		
 		if (target == null || target.removed) {
 			findNewTarget(mob);
 			System.out.println(target);
@@ -38,21 +39,19 @@ public class AIEntitySearch extends AIBase {
 				int x = (int) mob.x, y = (int) mob.y, z = (int) mob.z;
 				switch (rot) {
 				case (0):
-					z--;
-					break;
-				case (4):
-					z--;
-					break;
-				case (1):
 					x++;
 					break;
-				case (2):
+				case (1):
 					z++;
+					break;
+				case (2):
+					z--;
 					break;
 				case (3):
 					x--;
 					break;
 				}
+				//mob.level.setTile(x, y, z, 1);
 				if (mob.level.getTile(x, y, z) != 0)
 					mob.jump();
 			}
@@ -93,7 +92,7 @@ public class AIEntitySearch extends AIBase {
 	public static void EntityWatchEntity(Entity e, Entity toWatch) {
 		double f1 = e.x - toWatch.x;
 		double f2 = e.z - toWatch.z;
-		float f = 5F;
+		float f = 0.5F;
 
 		double d = Math.toDegrees(Math.atan2(f1, f2));
 		if (Math.abs(d - e.yRot) > f) {
