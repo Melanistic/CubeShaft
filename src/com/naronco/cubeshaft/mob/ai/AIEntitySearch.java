@@ -69,25 +69,30 @@ public class AIEntitySearch extends AIBase {
 		}
 	}
 
-	private void findNewTarget(final Mob mob) {
-		try {
+	private void findNewTarget(final Mob mob) 
+	{
+		try 
+		{
 			Level l = mob.level;
-			List<Entity> e = l.getEntitysExcludingEntity(
-					mob.aabb.copie().grow(rad, rad, rad), mob,
-					new IEntitySelector() {
-						@Override
-						public boolean isValidEntity(Entity e) {
-							if (entitys.contains(e.getClass())) {
-								double d = getDistancetoEntity(e, mob);
-								if (path < 0 || path > d) {
-									path = d;
-									target = e;
-								}
-								return true;
-							}
-							return false;
+			List<Entity> e = l.getEntitysExcludingEntity(mob.aabb.copie().grow(rad, rad, rad), mob, new IEntitySelector() 
+			{
+				@Override
+				public boolean isValidEntity(Entity e) 
+				{
+					System.err.println(e.getClass());
+					if (entitys.contains(e.getClass())) 
+					{
+						double d = getDistancetoEntity(e, mob);
+						
+						if (path < 0 || path > d) {
+							path = d;
+							target = e;
 						}
-					});
+						return true;
+					}
+					return false;
+				}
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

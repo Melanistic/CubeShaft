@@ -142,6 +142,7 @@ public class Cubeshaft {
 					if (level != null) {
 						time++;
 						level.tick();
+						ticker.Tick();
 						synchronized (particleEngine.particles) {
 							for (int i = 0; i < particleEngine.particles.size(); i++) {
 								Particle p = particleEngine.particles.get(i);

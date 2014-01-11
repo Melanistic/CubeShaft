@@ -10,10 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.naronco.cubeshaft.Cubeshaft;
 import com.naronco.cubeshaft.Entity;
 import com.naronco.cubeshaft.level.generator.struct.TreeLevelStruct;
 import com.naronco.cubeshaft.level.tile.Tile;
+import com.naronco.cubeshaft.mob.MobSkeleton;
 import com.naronco.cubeshaft.phys.AABB;
+import com.naronco.cubeshaft.player.Player;
 
 public class Level {
 	public int width, depth, height;
@@ -95,8 +98,7 @@ public class Level {
 		return result;
 	}
 
-	public List<Entity> getEntitysExcludingEntity(AABB par1, Entity par2,
-			IEntitySelector par3) {
+	public List<Entity> getEntitysExcludingEntity(AABB par1, Entity par2, IEntitySelector par3) {
 		List<Entity> result = new ArrayList<>();
 		for (Entity e : entities) {
 			AABB tmpBB = e.aabb.copie();
@@ -162,7 +164,22 @@ public class Level {
 			return 0;
 		return tiles[(y * width + z) * depth + x] & 0xff;
 	}
-
+	
+	public int getHeigh(int x, int z) 
+	{
+		int y = 0;
+		while(getTile(x, y, z)!=0)
+		{
+			y++;
+		}
+		return y;		
+	}
+	
+	public boolean isDaytime()
+	{
+		return time>0 && time <1800;
+	}
+	
 	public void addEntity(Entity e) {
 		synchronized (entities) {
 			entities.add(e);
@@ -216,9 +233,38 @@ public class Level {
 		return false;
 	}
 
-	public void tick() {
+	public void tick() 
+	{
 		time = (time + 2) % 3600;
 		// time=900;
 		skyColor = sky.getSkyColor(time);
+		if(!isDaytime() && random.nextInt(20)==0);
+		{
+			Player p = Cubeshaft.game.player;
+			List l = getEntitysExcludingEntity(p.aabb.copie().grow(32, 32, 32), p);
+			if(l.size()<3)
+			{
+				spawnEntitys();
+			}
+		}
+	}
+	
+	private void spawnEntitys()
+	{
+		Player p = Cubeshaft.game.player;
+		float x = (random.nextInt(32)-random.nextInt(32));
+		float z = (random.nextInt(32)-random.nextInt(32));
+		
+		if(Math.sqrt(x*x+z*z)<16)
+		{
+			x = x<0?-16 : x>32 ? 16 : x;
+			z = z<0?-16 : z>32 ? 16 : z;
+		}
+		int y = getHeigh((int)x, (int)z);
+		
+		MobSkeleton sk = new MobSkeleton(this);
+		sk.setPos(p.x + x, y, p.z + z);
+		
+		addEntity(sk);
 	}
 }
