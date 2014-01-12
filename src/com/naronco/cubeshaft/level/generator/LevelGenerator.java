@@ -80,19 +80,68 @@ public class LevelGenerator {
 		}
 		
 		setProgressText("Smoothing..");
+		double[] gausMatrix = { 
+			0.00296901674395065, 0.013306209891014005, 0.02193823127971504, 0.013306209891014005, 0.00296901674395065, 
+			0.013306209891014005, 0.05963429543618023, 0.09832033134884507, 0.05963429543618023, 0.013306209891014005, 
+			0.02193823127971504, 0.09832033134884507, 0.16210282163712417, 0.09832033134884507, 0.02193823127971504, 
+			0.013306209891014005, 0.05963429543618023, 0.09832033134884507, 0.05963429543618023, 0.013306209891014005, 
+			0.00296901674395065, 0.013306209891014005, 0.02193823127971504, 0.013306209891014005, 0.00296901674395065 
+		};
+		int gausDepth = 5;
+		int iters = 4;
+		for(int i = 0; i < iters; i++)
+		{
+			for (int x = 0; x < width; x++) {
+				setProgress(x * (100 / iters) / (width - 1) + 100 / iters * i);
+				for (int y = 0; y < depth; y++) {
+					double total = 0;
+					for(int gx = 0; gx < gausDepth; gx++)
+					{
+						for(int gy = 0; gy < gausDepth; gy++)
+						{
+							total += getHeight(heightMap, x - 2 + gx, y - 2 + gy) * gausMatrix[gx + gy * gausDepth];
+						}
+					}
+					heightMap[x + y * depth] = (int)(total);
+				}
+			}
+		}
 		for (int x = 0; x < width; x++) {
-			setProgress(x * 50 / (width - 1));
+			setProgress(x * 100 / (width - 1));
+			for (int z = 0; z < depth; z++) {
+				int total = 0;
+				for(int gx = 0; gx < 7; gx++)
+				{
+					for(int gy = 0; gy < 7; gy++)
+					{
+						total += getHeight(heightMap, x - 3 + gx, z - 3 + gy);
+					}
+				}
+				heightMap[x + z * depth] = (int)(total / 49.0f);
+			}
+		}
+
+		setProgressText("Erosing..");
+		
+		for (int x = 0; x < width; x++) {
+			setProgress(x * 100 / (width - 1));
 			for (int y = 0; y < depth; y++) {
-				int m11 = getHeight(heightMap, x - 1, y - 1);
-				int m12 = getHeight(heightMap, x, y - 1);
-				int m13 = getHeight(heightMap, x + 1, y - 1);
-				int m21 = getHeight(heightMap, x - 1, y);
-				int m22 = getHeight(heightMap, x, y);
-				int m23 = getHeight(heightMap, x + 1, y);
-				int m31 = getHeight(heightMap, x - 1, y + 1);
-				int m32 = getHeight(heightMap, x, y + 1);
-				int m33 = getHeight(heightMap, x + 1, y + 1);
-				heightMap[x + y * depth] = (int)(0.14676266317374237f * m11 + 0.14676266317374237f * m13 + 0.14676266317374237f * m31 + 0.14676266317374237f * m33 + 0.24197072451914536f * m12 + 0.24197072451914536f * m21 + 0.24197072451914536f * m23 + 0.24197072451914536f * m32 + 0.3989422804014327f * m22);
+				heightMap[x + y * depth] = heightMap[x + y * depth] - 2 + random.nextInt(5);
+			}
+		}
+		setProgressText("Smoothing..");
+		for (int x = 0; x < width; x++) {
+			setProgress(x * 100 / (width - 1));
+			for (int y = 0; y < depth; y++) {
+				double total = 0;
+				for(int gx = 0; gx < gausDepth; gx++)
+				{
+					for(int gy = 0; gy < gausDepth; gy++)
+					{
+						total += getHeight(heightMap, x - 2 + gx, y - 2 + gy) * gausMatrix[gx + gy * gausDepth];
+					}
+				}
+				heightMap[x + y * depth] = (int)(total);
 			}
 		}
 
@@ -102,7 +151,7 @@ public class LevelGenerator {
 			for (int z = 0; z < depth; z++)
 				for (int y = 0; y < height; y++) {
 					Biome biome = biomes[x + z * width];
-					int hei = heightMap[x + z * width] / 4;
+					int hei = heightMap[x + z * width];
 
 					int tile = 0;
 					if (biome == Biome.Desert) {
@@ -172,7 +221,7 @@ public class LevelGenerator {
 		for (int x = 0; x < width; x++) {
 			this.setProgress(x * 100 / (width - 1));
 			for (int z = 0; z < depth; z++)
-				for (int y = 0; y < height / 2; y++) {
+				for (int y = 0; y < height / 4; y++) {
 					int tile = level.getTile(x, y, z);
 					if (tile == 0)
 						if ((level.getTile(x, y - 1, z - 1) == 0)

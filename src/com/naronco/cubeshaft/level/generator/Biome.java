@@ -47,7 +47,7 @@ public enum Biome {
 		{
 			return Plains;
 		}
-		else if (height > 0.3f)
+		else if (height > 0.4f)
 		{
 			return Water;
 		}
