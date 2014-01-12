@@ -2,6 +2,9 @@
  * This file is part of Cubeshaft
  * Copyright Naronco 2013
  * Sharing and using is only allowed with written permission of Naronco
+ *
+ * According to Main Coder Jojo, this project is a Team Melanistic project. 
+ * Please remove Naronco copyright so we can add Melanistic Copyright.
  */
 
 package com.naronco.cubeshaft.level.generator;
@@ -263,8 +266,8 @@ public class LevelGenerator {
 		 * i--; } else i--; }
 		 */
 
-		// overlay(flyingIslands);
-		// overlay(hell);
+		//  overlay(flyingIslands);
+		//  overlay(hell);
 
 		level.calcLightDepths(0, 0, width, depth);
 		for (int i = 0; i < level.levelRenderers.size(); i++) {
