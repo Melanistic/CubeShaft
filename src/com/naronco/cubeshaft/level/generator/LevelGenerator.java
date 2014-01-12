@@ -71,17 +71,17 @@ public class LevelGenerator {
 				0.015f);
 		int[] heightMap = new int[width * depth];
 
+		
 		for (int x = 0; x < width; x++) {
 			setProgress(x * 50 / (width - 1) + 50);
 			for (int z = 0; z < depth; z++) {
-				heightMap[x + z * depth] = (int) (heightmapGenerator.Generate(
-						x, z, biomes[x + z * depth]) * height);
+				heightMap[x + z * depth] = (int) (heightmapGenerator.Generate(x, z, biomes[x + z * depth]) * height);
 			}
 		}
-
+		
 		setProgressText("Smoothing..");
 		for (int x = 0; x < width; x++) {
-			setProgress(x * 100 / (width - 1));
+			setProgress(x * 50 / (width - 1));
 			for (int y = 0; y < depth; y++) {
 				int m11 = getHeight(heightMap, x - 1, y - 1);
 				int m12 = getHeight(heightMap, x, y - 1);
@@ -102,25 +102,24 @@ public class LevelGenerator {
 			for (int z = 0; z < depth; z++)
 				for (int y = 0; y < height; y++) {
 					Biome biome = biomes[x + z * width];
-					int hei = heightMap[x + z * width];
-					int shei = (int)(hei / 6.0f * 4);
+					int hei = heightMap[x + z * width] / 4;
 
 					int tile = 0;
 					if (biome == Biome.Desert) {
-						if (y < shei) tile = Tile.sand.id;
+						if (y < hei) tile = Tile.sand.id;
 					} else if (biome == Biome.Water) {
-						if(y < shei) tile = Tile.stone.id;
+						if(y < hei) tile = Tile.stone.id;
 					} else {
-						if (y == shei && y != height / 2 - 3)
+						if (y == hei && y != height / 2 - 3)
 							tile = Tile.grass.id;
-						else if (y == shei && y == height / 2 - 3)
+						else if (y == hei && y == height / 2 - 3)
 							tile = Tile.sand.id;
-						else if (y >= shei && y < shei)
+						else if (y >= hei && y < hei)
 							tile = Tile.dirt.id;
-						else if (y < shei && y >= shei - 5)
+						else if (y < hei && y >= hei - 5)
 							tile = random.nextInt(2) == 0 ? Tile.dirt.id
 									: Tile.stone.id;
-						else if (y < shei - 5)
+						else if (y < hei - 5)
 							tile = Tile.stone.id;
 					}
 					level.setTileNoUpdate(x, y, z, tile);
@@ -173,7 +172,7 @@ public class LevelGenerator {
 		for (int x = 0; x < width; x++) {
 			this.setProgress(x * 100 / (width - 1));
 			for (int z = 0; z < depth; z++)
-				for (int y = 0; y < height / 3 - 2; y++) {
+				for (int y = 0; y < height / 2; y++) {
 					int tile = level.getTile(x, y, z);
 					if (tile == 0)
 						if ((level.getTile(x, y - 1, z - 1) == 0)
