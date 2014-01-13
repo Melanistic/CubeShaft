@@ -19,7 +19,7 @@ public class AIEntitySearch extends AIBase {
 	public AIEntitySearch(int radius, Class<? extends Entity>... classes) {
 		rad = radius;
 		entitys = Arrays.asList(classes);
-		target = Cubeshaft.game.player;
+		//target = Cubeshaft.game.player;
 	}
 
 	@Override
@@ -79,7 +79,6 @@ public class AIEntitySearch extends AIBase {
 				@Override
 				public boolean isValidEntity(Entity e) 
 				{
-					System.err.println(e.getClass());
 					if (entitys.contains(e.getClass())) 
 					{
 						double d = getDistancetoEntity(e, mob);

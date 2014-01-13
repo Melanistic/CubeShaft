@@ -89,7 +89,9 @@ public class Level {
 
 	public List<Entity> getEntitysExcludingEntity(AABB par1, Entity par2) {
 		List<Entity> result = new ArrayList<>();
-		for (Entity e : entities) {
+		for (Entity e : entities) 
+		{
+			if(e==null)continue;
 			AABB tmpBB = e.aabb.copie();
 			if (par1.intersects(tmpBB))
 				result.add(e);

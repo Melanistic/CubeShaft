@@ -27,7 +27,7 @@ public class MobSkeleton extends Mob {
 	public MobSkeleton(Level level) {
 		super(level);
 		tasks.add(new AISwimming());
-		tasks.add(new AIEntitySearch(20, ItemEntity.class));
+		tasks.add(new AIEntitySearch(32, ItemEntity.class));
 		normalSpeed = 0.02F;
 	}
 
