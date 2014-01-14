@@ -15,6 +15,7 @@ public class AIEntitySearch extends AIBase {
 	private List<Class<? extends Entity>> entitys;
 	private Entity target = null;
 	private double path = -1;
+	private int lasttime = 0;
 
 	public AIEntitySearch(int radius, Class<? extends Entity>... classes) {
 		rad = radius;
@@ -27,10 +28,17 @@ public class AIEntitySearch extends AIBase {
 		
 		if (target == null || target.removed) {
 			findNewTarget(mob);
-			System.out.println(target);
+			//System.out.println(target);
 		}
 		if (target != null && !target.removed) {
-			EntityWatchEntity(mob, target);
+			
+			lasttime--;
+			if(lasttime<=0)
+			{
+				EntityWatchEntity(mob, target);
+				lasttime=2;
+			}
+			
 			mob.walk(mob.normalSpeed);
 
 			// if(mob.xd<0.0001&&mob.zd<0.0001)
@@ -92,6 +100,7 @@ public class AIEntitySearch extends AIBase {
 					return false;
 				}
 			});
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -104,22 +113,18 @@ public class AIEntitySearch extends AIBase {
 		return Math.sqrt(f1 * f1 + f2 * f2);
 	}
 
-	public static void EntityWatchEntity(Entity e, Entity toWatch) {
+	public static void EntityWatchEntity(Entity e, Entity toWatch) 
+	{
 		double f1 = e.x - toWatch.x;
 		double f2 = e.z - toWatch.z;
-		float f = 0.5F;
 
 		double d = Math.toDegrees(Math.atan2(f1, f2));
-		if (Math.abs(d - e.yRot) > f) {
-			if ((d - e.yRot) > f)
-				e.yRot += f;
-			if ((d - e.yRot) < f)
-				e.yRot -= f;
-		} else
-			e.yRot = (float) d;
-		// double dis = Math.sqrt(f1*f1+f2*f2);
-		// double hig = e.y - toWatch.y;
-
-		// e.xRot = (float) Math.toDegrees(Math.atan2(hig, dis));
+		e.yRot = (float) d;
+		
+		double dis = Math.sqrt(f1*f1+f2*f2);
+		double hig = e.y - toWatch.y;
+		
+		e.xRot = (float) Math.toDegrees(Math.atan2(hig, dis));
+		
 	}
 }

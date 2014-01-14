@@ -27,7 +27,7 @@ public class MobSkeleton extends Mob {
 	public MobSkeleton(Level level) {
 		super(level);
 		tasks.add(new AISwimming());
-		tasks.add(new AIEntitySearch(32, ItemEntity.class));
+		tasks.add(new AIEntitySearch(32, ItemEntity.class, Player.class));
 		normalSpeed = 0.02F;
 	}
 
@@ -56,6 +56,7 @@ public class MobSkeleton extends Mob {
 
 		model.head.xRot = xRot;
 		model.head.yRot = yRot;
+		model.body.yRot = yRot;
 		model.rightArm.xRot = (float) Math.sin(time * 0.6662 + Math.PI) * 1.0f;
 		model.leftArm.xRot = (float) Math.sin(time * 0.6662) * 1.0f;
 		model.rightLeg.xRot = (float) Math.sin(time * 0.6662) * 0.7f;

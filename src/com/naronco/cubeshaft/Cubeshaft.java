@@ -274,8 +274,16 @@ public class Cubeshaft {
 								if (Keyboard.getEventKey() == Keyboard.KEY_R) player.resetPos();
 								if (Keyboard.getEventKey() == Keyboard.KEY_Y) mouseDir = -mouseDir;
 								if (Keyboard.getEventKey() == Keyboard.KEY_F) levelRenderer.viewDistance = (levelRenderer.viewDistance + 1) % 4;
-								if (Keyboard.getEventKey() == Keyboard.KEY_Q) {
-									if (player.inventory.items.size() > 0) player.inventory.items.remove(player.inventory.selectedSlot);
+								if (Keyboard.getEventKey() == Keyboard.KEY_Q) 
+								{
+									if (player.inventory.items.size() > 0) 
+									{
+										Tile t = player.inventory.items.get(player.inventory.selectedSlot);
+										ItemEntity ent = new ItemEntity(player.level, t, player.x, player.y, player.z);
+										ent.setTimebeforPickup(20);
+										player.level.addEntity(ent);
+										player.inventory.items.remove(player.inventory.selectedSlot);
+									}
 								}
 
 							}
@@ -500,6 +508,7 @@ public class Cubeshaft {
 		levelManager = new LevelIO(this);
 		renderer = new Renderer(this);
 		clouds = new Cloud();
+		level.players.add(player);
 		inGame = true;
 		TileRenderer.init(this);
 

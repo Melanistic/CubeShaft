@@ -29,9 +29,10 @@ public class Player extends Entity {
 	public void collide(Entity e) {
 		if (e instanceof Mob)
 			push(e);
-		if (e instanceof ItemEntity && inventory.items.size() < 13) {
+		if (e instanceof ItemEntity && ((ItemEntity) e).getTimebeforPickup()==0) {
 			ItemEntity i = (ItemEntity) e;
-			if (!inventory.items.contains(i.getTile())) {
+			if (inventory.items.size() < 13 && !inventory.items.contains(i.getTile())) 
+			{
 				inventory.add(i.getTile().id);
 			}
 			e.removed = true;
