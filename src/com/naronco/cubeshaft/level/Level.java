@@ -88,37 +88,36 @@ public class Level {
 		return result;
 	}
 
-	public List<Entity> getEntitysExcludingEntity(AABB par1, Entity par2) {
-		List<Entity> result = new ArrayList<>();
-		for (Entity e : entities) 
+	public List<Entity> getEntitysExcludingEntity(AABB par1, Entity par2) 
+	{
+		return getEntitysExcludingEntity(par1, par2, new IEntitySelector() 
 		{
-			if(e==null)continue;
-			AABB tmpBB = e.aabb.copie();
-			if (par1.intersects(tmpBB))
-				result.add(e);
-		}
-		for (Entity e : players) 
-		{
-			if(e==null)continue;
-			AABB tmpBB = e.aabb.copie();
-			if (par1.intersects(tmpBB))
-				result.add(e);
-		}
-		result.remove(par2);
-		return result;
+			@Override
+			public boolean isValidEntity(Entity e) 
+			{
+				return true;
+			}
+		});
 	}
 
 	public List<Entity> getEntitysExcludingEntity(AABB par1, Entity par2, IEntitySelector par3) {
 		List<Entity> result = new ArrayList<>();
-		for (Entity e : entities) {
-			AABB tmpBB = e.aabb.copie();
-			if (par1.intersects(tmpBB) && par3.isValidEntity(e))
-				result.add(e);
+		
+		synchronized (entities) 
+		{
+			for (Entity e : entities) {
+				AABB tmpBB = e.aabb.copie();
+				if (par1.intersects(tmpBB) && par3.isValidEntity(e))
+					result.add(e);
+			}
 		}
-		for (Entity e : players) {
-			AABB tmpBB = e.aabb.copie();
-			if (par1.intersects(tmpBB) && par3.isValidEntity(e))
-				result.add(e);
+		synchronized (players) 
+		{
+			for (Entity e : players) {
+				AABB tmpBB = e.aabb.copie();
+				if (par1.intersects(tmpBB) && par3.isValidEntity(e))
+					result.add(e);
+			}
 		}
 		result.remove(par2);
 		return result;
