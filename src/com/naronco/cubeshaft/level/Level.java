@@ -27,6 +27,7 @@ public class Level {
 
 	public Random random = new Random();
 	public List<Entity> entities = new ArrayList<Entity>();
+	public List<Player> players = new ArrayList<Player>();
 
 	public int skyColor = -1;
 	public Sun sun = new Sun(8.0f);
@@ -89,7 +90,16 @@ public class Level {
 
 	public List<Entity> getEntitysExcludingEntity(AABB par1, Entity par2) {
 		List<Entity> result = new ArrayList<>();
-		for (Entity e : entities) {
+		for (Entity e : entities) 
+		{
+			if(e==null)continue;
+			AABB tmpBB = e.aabb.copie();
+			if (par1.intersects(tmpBB))
+				result.add(e);
+		}
+		for (Entity e : players) 
+		{
+			if(e==null)continue;
 			AABB tmpBB = e.aabb.copie();
 			if (par1.intersects(tmpBB))
 				result.add(e);
@@ -101,6 +111,11 @@ public class Level {
 	public List<Entity> getEntitysExcludingEntity(AABB par1, Entity par2, IEntitySelector par3) {
 		List<Entity> result = new ArrayList<>();
 		for (Entity e : entities) {
+			AABB tmpBB = e.aabb.copie();
+			if (par1.intersects(tmpBB) && par3.isValidEntity(e))
+				result.add(e);
+		}
+		for (Entity e : players) {
 			AABB tmpBB = e.aabb.copie();
 			if (par1.intersects(tmpBB) && par3.isValidEntity(e))
 				result.add(e);

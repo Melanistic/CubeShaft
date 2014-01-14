@@ -18,6 +18,7 @@ import com.naronco.cubeshaft.render.TileRenderer;
 
 public class ItemEntity extends Entity {
 	private int time;
+	private int pickup;
 	private Tile tile;
 	private int value;
 
@@ -36,6 +37,9 @@ public class ItemEntity extends Entity {
 	public void tick() {
 		time++;
 		xRot = time * 2 / 3.0f;
+		
+		if(pickup>0)
+			pickup--;
 
 		this.xo = x;
 		this.yo = y;
@@ -71,6 +75,14 @@ public class ItemEntity extends Entity {
 				}
 			}
 		}
+	}
+	public void setTimebeforPickup(int t)
+	{
+		pickup = t;
+	}
+	public int getTimebeforPickup()
+	{
+		return pickup;
 	}
 
 	public void render(float delta) {
