@@ -122,9 +122,9 @@ public class AIEntitySearch extends AIBase {
 		e.yRot = (float) d;
 		
 		double dis = Math.sqrt(f1*f1+f2*f2);
-		double hig = e.y - toWatch.y;
+		double hig = toWatch.y - e.y;
 		
-		e.xRot = (float) Math.toDegrees(Math.atan2(hig, dis));
+		e.xRot = (float) Math.toDegrees(Math.atan2(dis, hig));
 		
 	}
 }
