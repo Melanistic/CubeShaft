@@ -5,6 +5,7 @@ CubeShaft
 
 Cubeshaft is a Minecraft Based Sandbox game with a huge todo and a motivated coding crew! The goal of the game is that the player chose their goals by themselfes. Will they build? Will they hunt monsters? Will they explore the world? There is a 1000 ways to play this game and there will come even more! This game just came out of the INDEV Stage (IN DEVelopment) and is now in INFDEV Stage (INFinite Worldgen in DEVelopment). We'll release a Pre-Alpha as soon as possible.
 The price for playing the alpha will most likely be at 5€/8$ and in Beta will rise to 10€/16$. There will be a free demo version. Mod support will also come as soon as possible. There is also a small chance of seeing us on steam sometime within the next year! Stay tuned and wait! It will be worth it! :)
+
 ----------
 
 ###Current Features:
