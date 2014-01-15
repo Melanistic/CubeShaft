@@ -42,7 +42,9 @@ The price for playing the alpha will most likely be at 5€/8$ and in Beta will ri
 
 ###Download:
 
-https://github.com/Melanistic/CubeShaft/releases/tag/Infdev0.1
+Infdev v0.1:
+- https://github.com/Melanistic/CubeShaft/releases/tag/Infdev0.1
+
 ----------
 
 ###Credits:
