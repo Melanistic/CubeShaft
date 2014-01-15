@@ -28,7 +28,7 @@ public class Tile {
 	public static final Tile water = new LiquidTile(9, 1);
 	public static final Tile flowingLava = new FlowingLiquidTile(10, 2);
 	public static final Tile lava = new LiquidTile(11, 2);
-	public static final Tile wood = new WoodTile(12);
+	public static final Tile wood = new WoodTile(12, 18);
 	public static final Tile leaves = new LeafTile(13);
 	public static final Tile tallGrass = new TallGrassTile(14);
 	public static final Tile glass = new GlassTile(15);
@@ -37,6 +37,13 @@ public class Tile {
 	public static final Tile hellStone = new Tile(18, 16 * 15 + 1);
 	public static final Tile bamboo = new BambooTile(19, 16);
 	public static final Tile fence = new FenceTile(20, 17);
+	public static final Tile sprucewood = new WoodTile(21, 20);
+	public static final Tile oakwood = new WoodTile(22, 22);
+	public static final Tile birchwood = new WoodTile(23, 24);
+	public static final Tile Palmwood = new WoodTile(24, 26);
+	public static final Tile clay = new WoodTile(25, 28);
+
+
 
 	public int texIndex;
 	public final int id;
