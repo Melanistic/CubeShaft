@@ -150,14 +150,15 @@ public class Cubeshaft {
 								if (p.removed) particleEngine.particles.remove(i--);
 							}
 						}
-
+						//Move to Level.tick()
+						/*
 						synchronized (level.entities) {
 							for (int i = 0; i < level.entities.size(); i++) {
 								level.entities.get(i).tick();
 								if (level.entities.get(i).y < -50) level.entities.get(i).removed = true;
 								if (level.entities.get(i).removed) level.entities.remove(i--);
 							}
-						}
+						}*/
 
 						// zLight = (float) (Math.cos(level.time / 3600f * 2f *
 						// Math.PI) * 146.0f + level.depth / 2);
@@ -994,6 +995,7 @@ public class Cubeshaft {
 		basicColorShader.enable();
 		clouds.render();
 		glColor3f(253 / 255.0f, 184 / 255.0f, 19 / 255.0f);
+		sunAngle = level.time/10F;
 		level.sun.render(level.width * 0.5f, yLight, zLight);
 	}
 

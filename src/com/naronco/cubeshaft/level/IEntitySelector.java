@@ -1,3 +1,6 @@
+/**
+ * @author MCenderdragon
+ */
 package com.naronco.cubeshaft.level;
 
 import com.naronco.cubeshaft.Entity;

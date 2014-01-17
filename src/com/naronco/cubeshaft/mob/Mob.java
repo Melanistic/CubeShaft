@@ -12,15 +12,18 @@ import java.util.List;
 import com.naronco.cubeshaft.Entity;
 import com.naronco.cubeshaft.level.Level;
 import com.naronco.cubeshaft.mob.ai.AIBase;
+import com.naronco.cubeshaft.mob.ai.Navigator;
 import com.naronco.cubeshaft.model.Model;
 
 public class Mob extends Entity {
 	public int maxHealth, health;
 	protected Model model;
 	public float xa, za;
-	public float normalSpeed = 0.1F;
+	public float normalSpeed = 0.2F;
 	protected List<AIBase> tasks = new ArrayList<>();
-
+	public Entity target;
+	public Navigator navigator = new Navigator(this);
+	
 	public Mob(Level level) {
 		super(level);
 	}
@@ -42,6 +45,7 @@ public class Mob extends Entity {
 	public void tick() {
 		super.tick();
 		handelAI();
+		navigator.navigate();
 		this.xo = this.x;
 		this.yo = this.y;
 		this.zo = this.z;

@@ -11,9 +11,7 @@ import static org.lwjgl.opengl.GL11.glRotatef;
 import static org.lwjgl.opengl.GL11.glScalef;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 
-import com.naronco.cubeshaft.ItemEntity;
 import com.naronco.cubeshaft.level.Level;
-import com.naronco.cubeshaft.level.tile.Tile;
 import com.naronco.cubeshaft.mob.ai.AIEntitySearch;
 import com.naronco.cubeshaft.mob.ai.AISwimming;
 import com.naronco.cubeshaft.model.SkeletonModel;
@@ -27,7 +25,7 @@ public class MobSkeleton extends Mob {
 	public MobSkeleton(Level level) {
 		super(level);
 		tasks.add(new AISwimming());
-		tasks.add(new AIEntitySearch(32, ItemEntity.class, Player.class));
+		tasks.add(new AIEntitySearch(32, Player.class));
 		normalSpeed = 0.02F;
 	}
 

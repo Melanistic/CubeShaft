@@ -1,10 +1,11 @@
+/**
+ * @author MCenderdragon
+ */
 package com.naronco.cubeshaft.mob.ai;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
-import com.naronco.cubeshaft.Cubeshaft;
 import com.naronco.cubeshaft.Entity;
 import com.naronco.cubeshaft.level.IEntitySelector;
 import com.naronco.cubeshaft.level.Level;
@@ -13,29 +14,71 @@ import com.naronco.cubeshaft.mob.Mob;
 public class AIEntitySearch extends AIBase {
 	private int rad;
 	private List<Class<? extends Entity>> entitys;
-	private Entity target = null;
+	//private Entity target = null;
 	private double path = -1;
-	private int lasttime = 0;
+	private long lasttime = 0;
+	private Thread search;
 
-	public AIEntitySearch(int radius, Class<? extends Entity>... classes) {
+	public AIEntitySearch(int radius, Class<? extends Entity>... par2) {
 		rad = radius;
-		entitys = Arrays.asList(classes);
+		entitys = Arrays.asList(par2);
 		//target = Cubeshaft.game.player;
 	}
 
 	@Override
-	public void task(Mob mob) {
+	public void task(final Mob mob) {
 		
-		if (target == null || target.removed) {
+		if (mob.target == null || mob.target.removed) {
 			findNewTarget(mob);
-			//System.out.println(target);
 		}
-		if (target != null && !target.removed) {
+		if (mob.target != null && !mob.target.removed) 
+		{
+			if(mob.navigator.havePath() || search!=null && (search.isAlive() || search.isInterrupted()))
+			{
+				return;
+			}
+			else if(System.currentTimeMillis() - lasttime > 1000)
+			{
+				lasttime = System.currentTimeMillis();
+				search = new Thread(new Runnable() 
+				{			
+					@Override
+					public void run() 
+					{
+						try 
+						{
+							Thread t2 = new Thread(new Runnable() 
+							{
+								@Override
+								public void run() 
+								{
+									Waypoint w = new Waypoint((int) mob.target.x, (int) mob.target.y+1, (int) mob.target.z);
+									Path p = Path.getPath(mob.level, new Waypoint(mob), w, mob.normalSpeed);
+									mob.navigator.setPath(p);
+								}
+							}, "Path Thread "+mob);
+							t2.start();
+							t2.join(1000);
+							t2.interrupt();
+						
+							Thread.yield();
+						} 
+						catch (InterruptedException e) 
+						{
+							e.printStackTrace();
+						}
+					}
+				});
+				search.start();
+			}
 			
+			
+			
+			/*
 			lasttime--;
 			if(lasttime<=0)
 			{
-				EntityWatchEntity(mob, target);
+				EntityWatchEntity(mob, mob.target);
 				lasttime=2;
 			}
 			
@@ -73,7 +116,7 @@ public class AIEntitySearch extends AIBase {
 				
 				if (mob.level.getTile(x1, y1, z1) != 0 || mob.level.getTile(x2, y2, z2) != 0)
 					mob.jump();
-			}
+			}*/
 		}
 	}
 
@@ -82,7 +125,7 @@ public class AIEntitySearch extends AIBase {
 		try 
 		{
 			Level l = mob.level;
-			List<Entity> e = l.getEntitysExcludingEntity(mob.aabb.copie().grow(rad, rad, rad), mob, new IEntitySelector() 
+			l.getEntitysExcludingEntity(mob.aabb.copie().grow(rad, rad, rad), mob, new IEntitySelector() 
 			{
 				@Override
 				public boolean isValidEntity(Entity e) 
@@ -93,7 +136,7 @@ public class AIEntitySearch extends AIBase {
 						
 						if (path < 0 || path > d) {
 							path = d;
-							target = e;
+							mob.target = e;
 						}
 						return true;
 					}

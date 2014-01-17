@@ -14,7 +14,9 @@ import com.naronco.cubeshaft.Cubeshaft;
 import com.naronco.cubeshaft.Entity;
 import com.naronco.cubeshaft.level.generator.struct.TreeLevelStruct;
 import com.naronco.cubeshaft.level.tile.Tile;
+import com.naronco.cubeshaft.mob.Mob;
 import com.naronco.cubeshaft.mob.MobSkeleton;
+import com.naronco.cubeshaft.mob.ai.Waypoint;
 import com.naronco.cubeshaft.phys.AABB;
 import com.naronco.cubeshaft.player.Player;
 
@@ -182,8 +184,9 @@ public class Level {
 	public int getHeigh(int x, int z) 
 	{
 		int y = 0;
-		while(getTile(x, y, z)!=0)
-		{
+		int id = getTile(x, y, z);
+		while(id!=0)
+		{		
 			y++;
 		}
 		return y;		
@@ -252,33 +255,62 @@ public class Level {
 		time = (time + 2) % 3600;
 		// time=900;
 		skyColor = sky.getSkyColor(time);
+		
+		List<Entity> remove = new ArrayList<Entity>();
+		for (Entity e : entities) {
+			e.tick();
+			if (e.y < -50) e.removed = true;
+			if (e.removed)
+				remove.add(e);
+		}
+		entities.removeAll(remove);
+		
 		if(!isDaytime() && random.nextInt(20)==0);
 		{
 			Player p = Cubeshaft.game.player;
-			List l = getEntitysExcludingEntity(p.aabb.copie().grow(32, 32, 32), p);
-			if(l.size()<3)
+			List l = getEntitysExcludingEntity(p.aabb.copie().grow(64, 64, 64), p, new IEntitySelector() 
+			{	
+				@Override
+				public boolean isValidEntity(Entity e) 
+				{
+					return e instanceof Mob;
+				}
+			});
+			if(l.size() < 3)
 			{
-				spawnEntitys();
+				spawnMobs();
 			}
 		}
 	}
 	
-	private void spawnEntitys()
+	private void spawnMobs()
 	{
 		Player p = Cubeshaft.game.player;
 		float x = (random.nextInt(32)-random.nextInt(32));
 		float z = (random.nextInt(32)-random.nextInt(32));
 		
-		if(Math.sqrt(x*x+z*z)<16)
-		{
-			x = x<0?-16 : x>32 ? 16 : x;
-			z = z<0?-16 : z>32 ? 16 : z;
-		}
+		if(Math.sqrt(x*x+z*z)>16)
+		{	
 		int y = getHeigh((int)x, (int)z);
 		
 		MobSkeleton sk = new MobSkeleton(this);
 		sk.setPos(p.x + x, y, p.z + z);
 		
 		addEntity(sk);
+		}
 	}
+	private void DespawnMobs()
+	{
+		for(Entity e : entities)
+		{
+			if(e instanceof Mob)
+			{
+				if(new Waypoint( Cubeshaft.game.player).getDistansTo(new Waypoint(e))>80)
+				{
+					e.removed = true;
+				}
+			}
+		}
+	}
+	
 }

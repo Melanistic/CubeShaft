@@ -1,3 +1,6 @@
+/**
+ * @author MCenderdragon
+ */
 package com.naronco.cubeshaft.mob.ai;
 
 import com.naronco.cubeshaft.mob.Mob;

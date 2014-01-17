@@ -13,6 +13,7 @@ import java.util.List;
 import com.naronco.cubeshaft.level.IEntitySelector;
 import com.naronco.cubeshaft.level.Level;
 import com.naronco.cubeshaft.level.tile.Tile;
+import com.naronco.cubeshaft.player.Player;
 import com.naronco.cubeshaft.render.Tesselator;
 import com.naronco.cubeshaft.render.TileRenderer;
 
@@ -62,7 +63,14 @@ public class ItemEntity extends Entity {
 			List<Entity> e = level.getEntitysExcludingEntity(
 					aabb.grow(1, 1, 1), this, new IEntitySelector() {
 						@Override
-						public boolean isValidEntity(Entity e) {
+						public boolean isValidEntity(Entity e) 
+						{
+							if(e instanceof Player)
+							{
+								x = e.x;
+								y = e.y-1;
+								z = e.z;
+							}
 							return e instanceof ItemEntity;
 						}
 					});

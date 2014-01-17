@@ -1,9 +1,6 @@
-/*
- * This file is part of Cubeshaft
- * Copyright Naronco 2013
- * Sharing and using is only allowed with written permission of Naronco
+/**
+ * @author MCenderdragon
  */
-
 package com.naronco.cubeshaft.mob.ai;
 
 import com.naronco.cubeshaft.mob.Mob;
