@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.naronco.cubeshaft.level.Level;
+import com.naronco.cubeshaft.level.tile.Tile;
 import com.naronco.cubeshaft.mob.ai.Waypoint.State;
 
 public class Path 
@@ -178,7 +179,6 @@ public class Path
 	{
 		Waypoint current = main;
 		
-		//TODO: y-mit in schleife
 		
 		for(int x=0;x<3;x++)
 		{
@@ -188,12 +188,15 @@ public class Path
 				x1 = (int) ((main.x()-1) + x);
 				z1 = (int) ((main.z()-1) + z);
 				y1 = l.getHeigh(x1, z1);
-				/*
-				try {
-				y1 = l.getBlockID(x1, z1);
-				} catch (ArrayIndexOutOfBoundsException e){
-				continue;}
-				*/
+				int id = l.getTile(x1, y1-1, z1);
+				if(id!=0)
+				{
+					Tile t = Tile.tiles[id];
+					if(t.getAABB(x1, y1-1, z1)==null)
+					{
+						y1--;
+					}
+				}
 				Waypoint w = new Waypoint(x1, y1, z1);
 				w.parent = main;
 				main.state = State.part;

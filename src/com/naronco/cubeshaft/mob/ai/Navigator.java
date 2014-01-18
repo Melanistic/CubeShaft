@@ -21,6 +21,7 @@ public class Navigator
 	public void setPath(Path p)
 	{
 		path = p;
+		/*
 		if(path!=null)
 		{
 			for(Waypoint w : path.getPoints())
@@ -29,7 +30,7 @@ public class Navigator
 			}
 			toNavigate.removed = true;
 		}
-		
+		*/
 	}
 	
 	public void navigate()

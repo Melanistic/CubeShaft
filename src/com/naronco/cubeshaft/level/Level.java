@@ -184,8 +184,7 @@ public class Level {
 	public int getHeigh(int x, int z) 
 	{
 		int y = 0;
-		int id = getTile(x, y, z);
-		while(id!=0)
+		while(getTile(x, y, z)!=0)
 		{		
 			y++;
 		}
@@ -257,7 +256,8 @@ public class Level {
 		skyColor = sky.getSkyColor(time);
 		
 		List<Entity> remove = new ArrayList<Entity>();
-		for (Entity e : entities) {
+		List<Entity> ents = new ArrayList<Entity>(entities);	
+		for (Entity e : ents) {
 			e.tick();
 			if (e.y < -50) e.removed = true;
 			if (e.removed)
