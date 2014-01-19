@@ -16,6 +16,7 @@ import com.naronco.cubeshaft.level.generator.struct.TreeLevelStruct;
 import com.naronco.cubeshaft.level.tile.Tile;
 import com.naronco.cubeshaft.mob.Mob;
 import com.naronco.cubeshaft.mob.MobSkeleton;
+import com.naronco.cubeshaft.mob.MobSkeletonWater;
 import com.naronco.cubeshaft.mob.ai.Waypoint;
 import com.naronco.cubeshaft.phys.AABB;
 import com.naronco.cubeshaft.player.Player;
@@ -291,12 +292,17 @@ public class Level {
 		
 		if(Math.sqrt(x*x+z*z)>16)
 		{	
-		int y = getHeigh((int)x, (int)z);
+			int y = getHeigh((int)x, (int)z);
+			
+			Mob m;
+			if(getTile((int)x, y-2, (int)z)==Tile.water.id || getTile((int)x, y-2, (int)z)==Tile.flowingWater.id)
+				m = new MobSkeletonWater(this);
+			else
+				m = new MobSkeleton(this);
+			
+			m.setPos(p.x + x, y, p.z + z);
 		
-		MobSkeleton sk = new MobSkeleton(this);
-		sk.setPos(p.x + x, y, p.z + z);
-		
-		addEntity(sk);
+		addEntity(m);
 		}
 	}
 	private void DespawnMobs()

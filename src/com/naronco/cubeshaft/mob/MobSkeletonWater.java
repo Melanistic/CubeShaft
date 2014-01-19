@@ -13,34 +13,30 @@ import static org.lwjgl.opengl.GL11.glTranslatef;
 
 import com.naronco.cubeshaft.level.Level;
 import com.naronco.cubeshaft.mob.ai.AIEntitySearch;
-import com.naronco.cubeshaft.mob.ai.AISwimming;
 import com.naronco.cubeshaft.model.SkeletonModel;
-import com.naronco.cubeshaft.render.TextureLoader;
 import com.naronco.cubeshaft.player.Player;
+import com.naronco.cubeshaft.render.TextureLoader;
 
-public class MobSkeleton extends Mob {
+public class MobSkeletonWater extends Mob {
 
 	private SkeletonModel model = new SkeletonModel();
-
-	public MobSkeleton(Level level) {
+	
+	public MobSkeletonWater(Level level) {
 		super(level);
-		tasks.add(new AISwimming());
 		tasks.add(new AIEntitySearch(32, Player.class));
-		normalSpeed = 0.04F;
 	}
 	
-
 	@Override
-	public void tick() {
-		super.tick();
-
+	public float getNormalSpeed() 
+	{
+		return isInWater() ? normalSpeed*2 : normalSpeed;
 	}
-
+	
 	@Override
 	public void render(float delta) {
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D,
-				TextureLoader.load("/mob/skeleton.png", GL_NEAREST));
+				TextureLoader.load("/mob/skeletonSunken.png", GL_NEAREST));
 		glPushMatrix();
 
 		double time = System.nanoTime() / 1000000000.0D * 10.0D * 1.0f;
@@ -71,5 +67,4 @@ public class MobSkeleton extends Mob {
 				TextureLoader.load("/terrain.png", GL_NEAREST));
 		glDisable(GL_TEXTURE_2D);
 	}
-
 }

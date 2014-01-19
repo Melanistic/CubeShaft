@@ -19,7 +19,7 @@ public class Mob extends Entity {
 	public int maxHealth, health;
 	protected Model model;
 	public float xa, za;
-	public float normalSpeed = 0.2F;
+	protected float normalSpeed = 0.2F;
 	protected List<AIBase> tasks = new ArrayList<>();
 	public Entity target;
 	public Navigator navigator = new Navigator(this);
@@ -41,6 +41,11 @@ public class Mob extends Entity {
 		}
 	}
 
+	public float getNormalSpeed() 
+	{
+		return normalSpeed;
+	}
+	
 	@Override
 	public void tick() {
 		super.tick();

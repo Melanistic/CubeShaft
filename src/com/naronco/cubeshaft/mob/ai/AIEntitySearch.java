@@ -53,7 +53,7 @@ public class AIEntitySearch extends AIBase {
 								public void run() 
 								{
 									Waypoint w = new Waypoint((int) mob.target.x, (int) mob.target.y+1, (int) mob.target.z);
-									Path p = Path.getPath(mob.level, new Waypoint(mob), w, mob.normalSpeed);
+									Path p = Path.getPath(mob.level, new Waypoint(mob), w, mob.getNormalSpeed());
 									mob.navigator.setPath(p);
 								}
 							}, "Path Thread "+mob);
