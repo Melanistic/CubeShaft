@@ -33,7 +33,7 @@ public class Entity {
 	public boolean collision = false;
 	public boolean removed = false;
 	public float heightOffset = 0.0f;
-	private float bbWidth = 0.6f;
+	protected float bbWidth = 0.6f;
 	public float bbHeight = 1.8f;
 	
 	protected HitBox hitbox;
@@ -43,8 +43,7 @@ public class Entity {
 		this.level = level;
 		resetPos();
 		hitbox = new HitBox();
-		float wh = bbWidth / 2.0f;
-		hitbox.addNamedBox(new AABB(-wh, 0, -wh, wh, bbHeight, wh), "body");
+		hitbox.addNamedBox(new AABB(-0.1F, 0, -0.1F, 0.1F, 0.2F, 0.1F), "body");
 	}
 
 	public void resetPos() {

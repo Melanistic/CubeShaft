@@ -14,6 +14,7 @@ import com.naronco.cubeshaft.level.Level;
 import com.naronco.cubeshaft.mob.ai.AIBase;
 import com.naronco.cubeshaft.mob.ai.Navigator;
 import com.naronco.cubeshaft.model.Model;
+import com.naronco.cubeshaft.phys.HitBox;
 
 public class Mob extends Entity {
 	public int maxHealth, health;
@@ -24,8 +25,10 @@ public class Mob extends Entity {
 	public Entity target;
 	public Navigator navigator = new Navigator(this);
 	
-	public Mob(Level level) {
+	public Mob(Level level) 
+	{
 		super(level);
+		hitbox = HitBox.getHumanModel(bbHeight, bbWidth);
 	}
 
 	public void hit(Entity e, int dmg) {

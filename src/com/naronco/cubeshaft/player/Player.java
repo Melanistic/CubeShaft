@@ -13,6 +13,7 @@ import com.naronco.cubeshaft.ItemEntity;
 import com.naronco.cubeshaft.level.Level;
 import com.naronco.cubeshaft.mob.Mob;
 import com.naronco.cubeshaft.model.HumanModel;
+import com.naronco.cubeshaft.phys.HitBox;
 import com.naronco.cubeshaft.render.TextureLoader;
 
 public class Player extends Entity {
@@ -25,9 +26,11 @@ public class Player extends Entity {
 		super(level);
 		this.heightOffset = 1.62f;
 		this.inventory = new Inventory();
+		hitbox = HitBox.getHumanModel(bbHeight, bbWidth);
 	}
-
-	public void collide(Entity e) {
+	
+	@Override
+	public void collide(Entity e, String part) {
 		if (e instanceof Mob)
 			push(e);
 		if (e instanceof ItemEntity && ((ItemEntity) e).getTimebeforPickup()==0) {
@@ -49,6 +52,7 @@ public class Player extends Entity {
 		this.zd -= zd * 0.1f;
 	}
 
+	@Override
 	public void tick() {
 		this.xo = this.x;
 		this.yo = this.y;

@@ -19,6 +19,9 @@ public class HitBox
 		names.addAll(par2);
 	}
 	
+	/**
+	 * returns all Boxes at the give Location
+	 */
 	public List<AABB> getRealPosition(float x, float y, float z)
 	{	
 		synchronized (parts) 
@@ -80,6 +83,9 @@ public class HitBox
 		}
 	}
 	
+	/**
+	 * Gives the total Box at tthe location (from minimum to maximum)
+	 */
 	public AABB getTotalBox(float x, float y, float z)
 	{
 		float x0=0, y0=0, z0=0, x1=0, y1=0, z1=0;
@@ -97,6 +103,16 @@ public class HitBox
 			}
 		}
 		return new AABB(x0 + x, y0 + y, z0 + z, x1 + x, y1 + y, z1 + z);
+	}
+	
+	
+	public static HitBox getHumanModel(float height, float width)
+	{
+		HitBox box = new HitBox();
+		float w = width / 2.0F;
+		box.addNamedBox(new AABB(-w/2.0F, height/3.0F, -w/2.0F, w/2.0F, height, w/2.0F), "head");
+		box.addNamedBox(new AABB(-w, 0, -w, w, height *2.0F /3.0F, w), "body");
+		return box;
 	}
 	
 }
