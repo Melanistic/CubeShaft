@@ -3,7 +3,6 @@ package com.melanistics;
 import java.io.File;
 import java.io.FileInputStream;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 
 import java.net.URL;

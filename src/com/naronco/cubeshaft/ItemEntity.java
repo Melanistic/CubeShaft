@@ -61,7 +61,7 @@ public class ItemEntity extends Entity {
 		}
 		if (!removed) {
 			List<Entity> e = level.getEntitysExcludingEntity(
-					aabb.grow(1, 1, 1), this, new IEntitySelector() {
+					hitbox.getTotalBox(x, y, z).grow(1, 1, 1), this, new IEntitySelector() {
 						@Override
 						public boolean isValidEntity(Entity e) 
 						{

@@ -53,7 +53,7 @@ public class Navigator
 			rotateToWaypoint(toNavigate, p);
 			
 			toNavigate.walk(path.getSpeed());
-			/*
+			
 			int rot = (int) Math.round((180.0F + toNavigate.yRot) / 90D);
 			int x1 = (int) toNavigate.x, y1 = (int) toNavigate.y, z1 = (int) toNavigate.z;
 			int x2 = (int) toNavigate.x, y2 = (int) toNavigate.y, z2 = (int) toNavigate.z;
@@ -83,7 +83,8 @@ public class Navigator
 			}
 			
 			if (toNavigate.level.getTile(x1, y1, z1) != 0 || toNavigate.level.getTile(x2, y2, z2) != 0)
-				toNavigate.jump();*/
+				toNavigate.jump();
+			
 			if(p.y()>entity.y() &&  p.getDistansTo(entity)<2.0F)
 			{
 				toNavigate.jump();

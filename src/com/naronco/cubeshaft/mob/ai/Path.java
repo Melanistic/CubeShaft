@@ -125,48 +125,46 @@ public class Path
 			else
 			{
 				int  opens = 0;
-				List<Waypoint> buffer = new ArrayList<Waypoint>(all);
-				for(Waypoint w : buffer)
+				//synchronized (all) 
 				{
-					if(w.equals(end))
+					List<Waypoint> buffer = new ArrayList<Waypoint>(all);
+					for(Waypoint w : buffer)
 					{
-						current = w;
-						break;
-					}
-					if(w.state==State.open)
-					{
-						if(start.getDistansTo(w)>maxrange)
+						if(w.equals(end))
 						{
-							w.state = State.closed;
-							continue;
+							current = w;
+							break;
 						}
-						opens++;
-						try {
-							
-							Waypoint w2 = next(l, w, end, all);
-							
-							if(w2.equals(end))
+						if(w.state==State.open)
+						{
+							if(start.getDistansTo(w)>maxrange)
 							{
-								current = w2;
-								break;
-							}	
-							if(w2.getDistansTo(end)<current.getDistansTo(end))
-							{
-								current = w2;
+								w.state = State.closed;
+								continue;
 							}
-						} catch(Exception e) {
-							w.state = State.closed;
+							opens++;
+							try {
+							
+								Waypoint w2 = next(l, w, end, all);
+								
+								if(w2.equals(end))
+								{
+									current = w2;
+									break;
+								}	
+								if(w2.getDistansTo(end)<current.getDistansTo(end))
+								{
+									current = w2;
+								}
+							} catch(Exception e) {
+								w.state = State.closed;
+							}
 						}
 					}
-				}
-				if(opens<=0)
-					break;
-			}/*
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}*/
+					if(opens<=0)
+						break;
+				}		
+			}
 		}		
 		
 		p.points = current.getParents();
@@ -178,7 +176,6 @@ public class Path
 	private static Waypoint next(Level l, Waypoint main, Waypoint end, List<Waypoint> all)
 	{
 		Waypoint current = main;
-		
 		
 		for(int x=0;x<3;x++)
 		{

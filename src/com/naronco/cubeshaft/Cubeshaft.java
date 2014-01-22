@@ -253,7 +253,7 @@ public class Cubeshaft {
 										if (hitResult.side == 4) x--;
 										if (hitResult.side == 5) x++;
 										AABB bb = Tile.tiles[selectedTile].getAABB(x, y, z);
-										if (bb == null || (bb != null && !player.aabb.intersects(bb))) level.setTile(x, y, z, selectedTile);
+										if (bb == null || (bb != null && !player.getBox().intersects(bb))) level.setTile(x, y, z, selectedTile);
 									}
 								}
 							}

@@ -32,7 +32,7 @@ public class Mob extends Entity {
 	}
 
 	public boolean isHeadInWater() {
-		return this.level.containsLiquid(this.aabb.grow(0.0f, -1.0f, 0.0f), 1);
+		return this.level.containsLiquid(hitbox.getTotalBox(x, y, z).grow(0.0f, -1.0f, 0.0f), 1);
 	}
 
 	public void handelAI() {

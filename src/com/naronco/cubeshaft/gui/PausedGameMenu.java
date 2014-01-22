@@ -35,6 +35,7 @@ public class PausedGameMenu extends Menu {
 	public void render(int xMouse, int yMouse) {
 		fill(0, 0, width, height, 0xa0050500);
 		drawString("Game menu", (this.width - TextRenderer.getTextLength("Game menu")) / 2, 40, 0xfffffff);
+		drawString("y: " + game.player.y, 10, 20, 0xeeeeee);
 		super.render(xMouse, yMouse);
 	}
 }

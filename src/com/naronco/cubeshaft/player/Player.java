@@ -21,6 +21,7 @@ public class Player extends Entity {
 	public Inventory inventory;
 
 	public Player(Level level) {
+		
 		super(level);
 		this.heightOffset = 1.62f;
 		this.inventory = new Inventory();

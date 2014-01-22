@@ -109,7 +109,7 @@ public class Level {
 		synchronized (entities) 
 		{
 			for (Entity e : entities) {
-				AABB tmpBB = e.aabb.copie();
+				AABB tmpBB = e.getBox().copie();
 				if (par1.intersects(tmpBB) && par3.isValidEntity(e))
 					result.add(e);
 			}
@@ -117,7 +117,7 @@ public class Level {
 		synchronized (players) 
 		{
 			for (Entity e : players) {
-				AABB tmpBB = e.aabb.copie();
+				AABB tmpBB = e.getBox().copie();
 				if (par1.intersects(tmpBB) && par3.isValidEntity(e))
 					result.add(e);
 			}
@@ -269,7 +269,7 @@ public class Level {
 		if(!isDaytime() && random.nextInt(20)==0);
 		{
 			Player p = Cubeshaft.game.player;
-			List l = getEntitysExcludingEntity(p.aabb.copie().grow(64, 64, 64), p, new IEntitySelector() 
+			List l = getEntitysExcludingEntity(p.getBox().copie().grow(64, 64, 64), p, new IEntitySelector() 
 			{	
 				@Override
 				public boolean isValidEntity(Entity e) 

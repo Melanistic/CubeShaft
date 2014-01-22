@@ -125,7 +125,7 @@ public class AIEntitySearch extends AIBase {
 		try 
 		{
 			Level l = mob.level;
-			l.getEntitysExcludingEntity(mob.aabb.copie().grow(rad, rad, rad), mob, new IEntitySelector() 
+			l.getEntitysExcludingEntity(mob.getBox().copie().grow(rad, rad, rad), mob, new IEntitySelector() 
 			{
 				@Override
 				public boolean isValidEntity(Entity e) 
