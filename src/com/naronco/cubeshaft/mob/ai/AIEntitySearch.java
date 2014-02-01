@@ -18,6 +18,7 @@ public class AIEntitySearch extends AIBase {
 	private double path = -1;
 	private long lasttime = 0;
 	private Thread search;
+	private boolean isSearching;
 
 	public AIEntitySearch(int radius, Class<? extends Entity>... par2) {
 		rad = radius;
@@ -33,11 +34,15 @@ public class AIEntitySearch extends AIBase {
 		}
 		if (mob.target != null && !mob.target.removed) 
 		{
-			if(mob.navigator.havePath() || search!=null && (search.isAlive() || search.isInterrupted()))
+			if(mob.navigator.havePath() || isSearching)
 			{
 				return;
 			}
-			else if(System.currentTimeMillis() - lasttime > 1000)
+			else if(search!=null && search.isAlive())
+			{
+				search = null;
+			}
+			else if(search==null && System.currentTimeMillis() - lasttime > 1000)
 			{
 				lasttime = System.currentTimeMillis();
 				search = new Thread(new Runnable() 
@@ -45,28 +50,11 @@ public class AIEntitySearch extends AIBase {
 					@Override
 					public void run() 
 					{
-						try 
-						{
-							Thread t2 = new Thread(new Runnable() 
-							{
-								@Override
-								public void run() 
-								{
-									Waypoint w = new Waypoint((int) mob.target.x, (int) mob.target.y+1, (int) mob.target.z);
-									Path p = Path.getPath(mob.level, new Waypoint(mob), w, mob.getNormalSpeed());
-									mob.navigator.setPath(p);
-								}
-							}, "Path Thread "+mob);
-							t2.start();
-							t2.join(1000);
-							t2.interrupt();
-						
-							Thread.yield();
-						} 
-						catch (InterruptedException e) 
-						{
-							e.printStackTrace();
-						}
+						AIEntitySearch.this.isSearching = true;
+						Waypoint w = new Waypoint((int) mob.target.x, (int) mob.target.y+1, (int) mob.target.z);
+						Path p = Path.getPath(mob.level, new Waypoint(mob), w, mob.getNormalSpeed(), 1000);
+						mob.navigator.setPath(p);
+						AIEntitySearch.this.isSearching = false;
 					}
 				});
 				search.start();

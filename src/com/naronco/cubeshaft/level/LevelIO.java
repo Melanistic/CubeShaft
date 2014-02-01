@@ -7,6 +7,7 @@
 package com.naronco.cubeshaft.level;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -126,8 +127,25 @@ public class LevelIO {
 		s.setFloat("z", player.z);
 		s.setFloat("xr", player.xRot);
 		s.setFloat("yr", player.yRot);
-
-		s.setString("Map", Arrays.toString(level.tiles));
+		
+		//DataSave map = new DataSave("Map");
+		System.out.println(level.tiles.length);
+		
+		char[] b = new char[level.tiles.length*2];
+		
+		for(int i=0; i<level.tiles.length;i++)
+		{
+			String s2 =  Integer.toHexString(level.tiles[i/2]);
+			s2 = s2.length()<=1 ? "0"+s2 : s2;
+			b[i] = s2.charAt(0);
+			b[i+level.tiles.length] = s2.charAt(1);
+		}
+		//s.setData("Map", map);
+		s.setString("map", String.valueOf(b));
+		//s.setString("Map", Arrays.toString(level.tiles));
+		clearLevel(level);
+		level = null;
+		System.gc();
 		try {
 
 			File path = new File("world");
@@ -144,7 +162,8 @@ public class LevelIO {
 
 	public void load(String levelName, Level level, Player player) {
 		try {
-			GZIPInputStream in = new GZIPInputStream(new FileInputStream(
+			GZIPInputStream in = new GZIPInputStream(
+					new FileInputStream(
 					new File("world", levelName + ".csworld")));
 			DataSave s = DataSave.xmlIO.readIO(in)[0];
 
@@ -162,23 +181,34 @@ public class LevelIO {
 			int height = s.getInt("h");
 			int depth = s.getInt("d");
 
-			game.setProgressTitle("Loading level..");
-			game.setProgressText("");
+			//game.setProgressTitle("Loading level..");
+			//game.setProgressText("");
 
 			int levelSize = width * height * depth;
 			byte[] tiles = new byte[levelSize];
-			String[] m = s.getString("Map").replace("[", "").replace("]", "")
-					.replace(" ", "").split(",");
-
-			for (int i = 0; i < levelSize; i++) {
-				tiles[i] = Byte.valueOf(m[i]);
+			//DataSave map = s.getData("Map");
+			String ma = s.getString("map");
+			for(int i=0;i<tiles.length;i++)
+			{
+				tiles[i] = (byte)(int)(Integer.decode("0x" + ma.charAt(i) + ma.charAt(i + tiles.length) ));//ma.charAt(i);
 			}
-
+			s.clear();
+			s = null;
+			System.gc();
+			
 			level.init(width, height, depth, tiles);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
+	}
+	
+	public void clearLevel(Level l)
+	{
+		l.entities.clear();
+		l.players.clear();
+		l.heightMap = null;
+		l.tiles = null;
 	}
 }

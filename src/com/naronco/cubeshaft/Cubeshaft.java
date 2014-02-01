@@ -262,11 +262,11 @@ public class Cubeshaft {
 							int index = -1;
 							boolean keyState = Keyboard.getEventKeyState();
 							int key = Keyboard.getEventKey();
-							if (key == Keyboard.KEY_W || key == Keyboard.KEY_UP) index = 0;
-							if (key == Keyboard.KEY_S || key == Keyboard.KEY_DOWN) index = 1;
-							if (key == Keyboard.KEY_A || key == Keyboard.KEY_LEFT) index = 2;
-							if (key == Keyboard.KEY_D || key == Keyboard.KEY_RIGHT) index = 3;
-							if (key == Keyboard.KEY_SPACE) index = 4;
+							if (key == KeyManager.getKey("forward") || key == Keyboard.KEY_UP) index = 0;
+							if (key == KeyManager.getKey("backward") || key == Keyboard.KEY_DOWN) index = 1;
+							if (key == KeyManager.getKey("left") || key == Keyboard.KEY_LEFT) index = 2;
+							if (key == KeyManager.getKey("right")|| key == Keyboard.KEY_RIGHT) index = 3;
+							if (key == KeyManager.getKey("jump")) index = 4;
 							if (index >= 0) player.keys[index] = keyState;
 							if (Keyboard.getEventKeyState()) {
 								if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) pauseGame();
@@ -275,7 +275,7 @@ public class Cubeshaft {
 								if (Keyboard.getEventKey() == Keyboard.KEY_R) player.resetPos();
 								if (Keyboard.getEventKey() == Keyboard.KEY_Y) mouseDir = -mouseDir;
 								if (Keyboard.getEventKey() == Keyboard.KEY_F) levelRenderer.viewDistance = (levelRenderer.viewDistance + 1) % 4;
-								if (Keyboard.getEventKey() == Keyboard.KEY_Q) 
+								if (Keyboard.getEventKey() == KeyManager.getKey("drop")) 
 								{
 									if (player.inventory.items.size() > 0) 
 									{
@@ -286,6 +286,7 @@ public class Cubeshaft {
 										player.inventory.items.remove(player.inventory.selectedSlot);
 									}
 								}
+								
 
 							}
 							ticker.Input(key, Keyboard.getEventCharacter(), keyState);
@@ -298,8 +299,8 @@ public class Cubeshaft {
 							renderer.heldTile.tile = Tile.tiles[selectedTile];
 						}
 					}
-
-					player.tick();
+				//	if(inGame)
+						player.tick();
 
 					int dwidth = Display.getWidth();
 					int dheight = Display.getHeight();

@@ -11,11 +11,16 @@ import static org.lwjgl.opengl.GL11.glRotatef;
 import static org.lwjgl.opengl.GL11.glScalef;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+
 import com.naronco.cubeshaft.level.Level;
 import com.naronco.cubeshaft.mob.ai.AIEntitySearch;
 import com.naronco.cubeshaft.mob.ai.AISwimming;
 import com.naronco.cubeshaft.model.SkeletonModel;
 import com.naronco.cubeshaft.render.TextureLoader;
+import com.naronco.cubeshaft.phys.AABB;
 import com.naronco.cubeshaft.player.Player;
 
 public class MobSkeleton extends Mob {
@@ -66,10 +71,49 @@ public class MobSkeleton extends Mob {
 		model.leftArm.render();
 		model.rightLeg.render();
 		model.leftLeg.render();
+		
+		
+		
 		glPopMatrix();
 		glBindTexture(GL_TEXTURE_2D,
 				TextureLoader.load("/terrain.png", GL_NEAREST));
 		glDisable(GL_TEXTURE_2D);
 	}
-
+	
+	public static void renderQube(float x0, float y0, float z0, float x1, float y1, float z1)
+	{
+		GL11.glBegin(GL11.GL_QUADS);
+		
+		GL11.glVertex3f(x0, y1, z0);
+		GL11.glVertex3f(x1, y1, z0);
+		GL11.glVertex3f(x1, y0, z0);
+		GL11.glVertex3f(x0, y0, z0);
+		
+		GL11.glVertex3f(x0, y1, z1);
+		GL11.glVertex3f(x1, y1, z1);
+		GL11.glVertex3f(x1, y0, z1);
+		GL11.glVertex3f(x0, y0, z1);
+		
+		GL11.glVertex3f(x0, y0, z1);
+		GL11.glVertex3f(x0, y0, z0);
+		GL11.glVertex3f(x0, y1, z1);
+		GL11.glVertex3f(x0, y1, z0);
+		
+		GL11.glVertex3f(x1, y0, z1);
+		GL11.glVertex3f(x1, y0, z0);
+		GL11.glVertex3f(x1, y1, z1);
+		GL11.glVertex3f(x1, y1, z0);
+		
+		GL11.glVertex3f(x0, y0, z1);
+		GL11.glVertex3f(x0, y0, z0);
+		GL11.glVertex3f(x1, y0, z1);
+		GL11.glVertex3f(x1, y0, z0);
+		
+		GL11.glVertex3f(x0, y1, z1);
+		GL11.glVertex3f(x0, y1, z0);
+		GL11.glVertex3f(x1, y1, z1);
+		GL11.glVertex3f(x1, y1, z0);
+		
+		GL11.glEnd();
+	}
 }

@@ -43,7 +43,16 @@ public class DataSave {
 	public String getName() {
 		return name;
 	}
-
+	
+	public void clear()
+	{
+		ints.clear();
+		floats.clear();
+		doubles.clear();
+		bools.clear();
+		Strings.clear();
+		data.clear();
+	}
 	// write
 	public void setBoolean(String n, boolean par1) {
 		bools.put(n, par1);
@@ -163,17 +172,20 @@ public class DataSave {
 		return s;
 	}
 
-	public static class xmlIO {
+	public static class xmlIO 
+	{
 		public static void writeIO(OutputStream out, DataSave data)
 				throws Exception {
+			
 			Document d = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder().newDocument();
 			Element e = (Element) d.appendChild(d.createElement("save"));
 
 			e.appendChild(writeData(data, d));
-
-			Transformer localTransformer = TransformerFactory.newInstance()
-					.newTransformer();
+			data.clear();
+			System.gc();
+			
+			Transformer localTransformer = TransformerFactory.newInstance().newTransformer();
 			DOMSource localDOMSource = new DOMSource(d);
 			StreamResult localStreamResult = new StreamResult(out);
 			localTransformer.transform(localDOMSource, localStreamResult);

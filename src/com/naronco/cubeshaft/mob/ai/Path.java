@@ -3,6 +3,7 @@
  */
 package com.naronco.cubeshaft.mob.ai;
 
+import java.awt.SystemColor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +60,7 @@ public class Path
 		
 		if(d1<d2)
 		{
-			Path p = getPath(l, p1, p3, speed);
+			Path p = getPath(l, p1, p3, speed, 500);
 			if(p != null)
 			{
 				points = p.points;
@@ -97,9 +98,10 @@ public class Path
 		return "Path: " +Arrays.toString(points.toArray());
 	}
 	
-	public static Path getPath(Level l, Waypoint start, Waypoint end, float speed)
+	public static Path getPath(Level l, Waypoint start, Waypoint end, float speed, int sotimeout)
 	{
 		System.out.println("search path for "+end);
+		long time = System.currentTimeMillis();
 		Path p = new Path(l, speed);
 		List<Waypoint> all = new ArrayList<Waypoint>();
 		//List<Waypoint> all = Main.main.all;
@@ -116,6 +118,10 @@ public class Path
 			if(next.equals(end))
 			{
 				current = next;
+				break;
+			}
+			if(System.currentTimeMillis()-time >= sotimeout)
+			{
 				break;
 			}
 			if(next!=current)

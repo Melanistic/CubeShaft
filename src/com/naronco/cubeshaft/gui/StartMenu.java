@@ -23,9 +23,15 @@ public class StartMenu extends Menu {
 
 	@Override
 	protected void buttonClicked(Button b) {
+		
 		if (b.id == 0) {
-			this.game.setMenu(new LevelGenerateMenu());
-			this.game.generateNewLevel();
+		//	this.game.setMenu(new LevelGenerateMenu());
+		//	this.game.generateNewLevel();
+			this.game.setMenu(new MenuSelectWorld());
+		}
+		if(b.id == 3)
+		{
+			this.game.setMenu(new MenuOptions());
 		}
 		if (b.id == 4) {
 			this.game.tryToQuit();
@@ -49,31 +55,6 @@ public class StartMenu extends Menu {
 		t.vertexUV(x1, y2, 0, 0, 1);
 		t.end();
 
-		File[] f = new File("world").listFiles(new FilenameFilter() {
-
-			@Override
-			public boolean accept(File arg0, String arg1) {
-				return arg1.endsWith(".csworld");
-			}
-		});
-		Arrays.sort(f, new Comparator<File>() {
-			@Override
-			public int compare(File o1, File o2) {
-				return o1.getName().compareTo(o2.getName());
-			}
-		});
-		for (int i = 0; i < f.length; i++) {
-			String s = f[i].getName().replace(".csworld", "");
-			int color = 0xffffff;
-			if (200 + 15 * i < ym && ym < 200 + 20 * i + 20) {
-				color = 0xffffffaa;
-				if (Mouse.isButtonDown(0)) {
-					this.game.levelManager.load(s, this.game.level, this.game.player);
-					game.setInGame();
-				}
-			}
-			//drawString(s, (width - TextRenderer.getTextLength(s)) / 2, 200 + 20 * i + 2, color);
-		}
 	}
 
 	@Override

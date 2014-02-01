@@ -11,9 +11,14 @@ import static org.lwjgl.opengl.GL11.glRotatef;
 import static org.lwjgl.opengl.GL11.glScalef;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+
 import com.naronco.cubeshaft.level.Level;
 import com.naronco.cubeshaft.mob.ai.AIEntitySearch;
 import com.naronco.cubeshaft.model.SkeletonModel;
+import com.naronco.cubeshaft.phys.AABB;
 import com.naronco.cubeshaft.player.Player;
 import com.naronco.cubeshaft.render.TextureLoader;
 
@@ -61,8 +66,20 @@ public class MobSkeletonWater extends Mob {
 		model.rightArm.render();
 		model.leftArm.render();
 		model.rightLeg.render();
-		model.leftLeg.render();
+		model.leftLeg.render();	
+		
 		glPopMatrix();
+		
+		glPushMatrix();
+		glDisable(GL_TEXTURE_2D);
+		GL11.glColor4f(0.5F, 1.0F, 0.0F, 0.75F);
+		List<AABB> bbs = hitbox.getRealPosition(x, y, z);
+		for(AABB aa : bbs)
+		{
+			MobSkeleton.renderQube(aa.x0, aa.y0, aa.z0, aa.x1, aa.y1, aa.z1);
+		}
+		glPopMatrix();
+		
 		glBindTexture(GL_TEXTURE_2D,
 				TextureLoader.load("/terrain.png", GL_NEAREST));
 		glDisable(GL_TEXTURE_2D);

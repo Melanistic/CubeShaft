@@ -29,10 +29,27 @@ public class Inventory {
 		add(Tile.glass.id);
 		add(Tile.brick.id);
 		add(Tile.fence.id);
+		/*for(int i=1;i < Tile.tiles.length; i++)
+		{
+			Tile t = Tile.tiles[i];
+			if(t!=null)
+			{
+				add(t);
+			}
+			else
+			{
+				break;
+			}
+		}*/
+	
 	}
 
 	public void add(int tile) {
 		items.add(Tile.tiles[tile]);
+	}
+	
+	public void add(Tile tile) {
+		items.add(tile);
 	}
 
 	public Tile getSelectedTile() {
