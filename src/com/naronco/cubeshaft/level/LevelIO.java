@@ -135,7 +135,7 @@ public class LevelIO {
 		
 		for(int i=0; i<level.tiles.length;i++)
 		{
-			String s2 =  Integer.toHexString(level.tiles[i/2]);
+			String s2 =  Integer.toHexString(level.tiles[i]);
 			s2 = s2.length()<=1 ? "0"+s2 : s2;
 			b[i] = s2.charAt(0);
 			b[i+level.tiles.length] = s2.charAt(1);
