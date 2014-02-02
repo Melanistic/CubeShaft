@@ -102,7 +102,7 @@ public class LevelIO {
 				tiles[i] = dis.readByte();
 			}
 
-			level.init(width, height, depth, tiles);
+		//	level.init(width, height, depth, tiles);
 			dis.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -196,7 +196,7 @@ public class LevelIO {
 			s = null;
 			System.gc();
 			
-			level.init(width, height, depth, tiles);
+			level.init(levelName, width, height, depth, tiles);
 
 		} catch (Exception e) {
 			e.printStackTrace();

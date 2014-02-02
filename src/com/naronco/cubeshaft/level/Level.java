@@ -25,6 +25,7 @@ public class Level {
 	public int width, depth, height;
 	public byte[] tiles;
 	public int[] heightMap;
+	public String name;
 
 	public List<LevelRenderer> levelRenderers = new ArrayList<LevelRenderer>();
 
@@ -37,7 +38,8 @@ public class Level {
 	public SkyColor sky = new SkyColor();
 	public int time;
 
-	public void init(int width, int height, int depth, byte[] tiles) {
+	public void init(String name, int width, int height, int depth, byte[] tiles) {
+		this.name = name;
 		this.width = width;
 		this.height = height;
 		this.depth = depth;

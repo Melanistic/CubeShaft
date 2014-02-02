@@ -13,6 +13,21 @@ public class MenuControls extends Menu
 	private int selected = -1;
 	
 	@Override
+	public void init() 
+	{
+		buttons.add(new Button(0, (width-300)/2 +200, height-40 , 300, 30, "Done"));
+	}
+	
+	@Override
+	protected void buttonClicked(Button button) 
+	{
+		if(button.id == 0)
+		{
+			game.setMenu(new StartMenu());
+		}
+	}
+	
+	@Override
 	public void render(int xm, int ym) 
 	{
 		fill(0, 0, width, height, 0xff442222);

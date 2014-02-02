@@ -139,7 +139,7 @@ public class Cubeshaft {
 					lastTime = now;
 					if (passedTime < 0) passedTime = 0;
 					if (passedTime > 1000000000) passedTime = 1000000000;
-					if (level != null) {
+					if (level != null && inGame) {
 						time++;
 						level.tick();
 						ticker.Tick();
@@ -299,7 +299,7 @@ public class Cubeshaft {
 							renderer.heldTile.tile = Tile.tiles[selectedTile];
 						}
 					}
-				//	if(inGame)
+					if(inGame)
 						player.tick();
 
 					int dwidth = Display.getWidth();
@@ -1021,8 +1021,8 @@ public class Cubeshaft {
 		}
 	}
 
-	public void generateNewLevel() {
-		this.generator.generate(level, 512, 128, 512);
+	public void generateNewLevel(String name) {
+		this.generator.generate(name, level, 512, 128, 512);
 		if (this.player != null) {
 			this.player.resetPos();
 		}

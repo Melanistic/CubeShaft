@@ -6,19 +6,29 @@
 
 package com.naronco.cubeshaft.gui;
 
+import com.naronco.cubeshaft.level.Level;
+
 public class PausedGameMenu extends Menu {
 	public void init() {
 		this.buttons.add(new Button(3, this.width / 2 - 200, this.height / 4, 400, 40, "Back to game"));
 		this.buttons.add(new Button(1, this.width / 2 - 200, this.height / 4 + 60, 190, 40, "Save"));
 		this.buttons.add(new Button(2, this.width / 2 + 10, this.height / 4 + 60, 190, 40, "Load"));
-		this.buttons.add(new Button(0, this.width / 2 - 200, this.height / 4 + 180, 400, 40, "Generate new level"));
+		//this.buttons.add(new Button(0, this.width / 2 - 200, this.height / 4 + 180, 400, 40, "Generate new level"));
+		this.buttons.add(new Button(0, this.width / 2 - 200, this.height / 4 + 180, 400, 40, "Save and Quit"));
 	}
 
 	protected void buttonClicked(Button b) {
-		if (b.id == 0) {
-			this.game.generateNewLevel();
-			this.game.setMenu(null);
-			this.game.setInGame();
+		if (b.id == 0) 
+		{
+			//this.game.generateNewLevel();
+			//this.game.setMenu(null);
+			//this.game.setInGame();
+			Level l = game.level;
+			game.level = new Level();
+			game.levelManager.save(l.name, l, game.player);
+			l = null;
+			System.gc();
+			this.game.setMenu(new StartMenu());
 		}
 		if (b.id == 1) {
 			this.game.setMenu(new LevelSaveMenu());

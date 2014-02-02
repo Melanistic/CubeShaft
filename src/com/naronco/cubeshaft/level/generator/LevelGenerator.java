@@ -39,9 +39,9 @@ public class LevelGenerator {
 		return heightmap[x + y * depth];
 	}
 
-	public boolean generate(Level level, int w, int h, int d) {
+	public boolean generate(String name, Level level, int w, int h, int d) {
 		this.game.setProgressTitle("Generating level");
-		level.init(w, h, d, new byte[w * h * d]);
+		level.init(name, w, h, d, new byte[w * h * d]);
 
 		this.width = w;
 		this.height = h;

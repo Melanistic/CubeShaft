@@ -33,8 +33,8 @@ public class MenuSelectWorld extends Menu
 				
 				LevelGenerator generator = new LevelGenerator(this.game);
 				Level level = new Level();
-				generator.generate(level, 512, 128, 512);
-				this.game.levelManager.save("new world", level, game.player);
+				generator.generate(getFreeWorldName(), level, 512, 128, 512);
+				this.game.levelManager.save(level.name, level, game.player);
 				
 				//this.game.generateNewLevel();
 				this.game.setMenu(new MenuSelectWorld());
@@ -84,6 +84,16 @@ public class MenuSelectWorld extends Menu
 			}
 		}
 		
+	}
+	
+	private String getFreeWorldName()
+	{
+		String defWorld = "new world";
+		File worlds = new File("world");
+		while(new File(worlds,defWorld+".csworld").exists())
+			defWorld += "-";
+		
+		return defWorld;
 	}
 	
 	@Override
