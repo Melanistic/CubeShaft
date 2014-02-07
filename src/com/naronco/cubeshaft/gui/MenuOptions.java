@@ -17,6 +17,14 @@ public class MenuOptions extends Menu
 				game.setMenu(new MenuControls());
 			}
 		}});
+		opt.add(new Object[] {"Player Name", new Runnable() 
+		{
+			@Override
+			public void run() 
+			{
+				game.setMenu(new MenuPlayerEdit());
+			}
+		}});
 	}
 	
 	@Override
