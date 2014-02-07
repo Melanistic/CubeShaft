@@ -7,6 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 public class Init {
+	
 	@Documented
 	@Retention(value = RetentionPolicy.RUNTIME)
 	@Target(value = { ElementType.METHOD })
@@ -19,6 +20,13 @@ public class Init {
 	public @interface Gui {
 		public abstract int ID();
 
+	}
+	
+	@Documented
+	@Retention(value = RetentionPolicy.RUNTIME)
+	@Target(value = { ElementType.METHOD })
+	public @interface Packet {
+		
 	}
 
 	@Gui(ID = 0)

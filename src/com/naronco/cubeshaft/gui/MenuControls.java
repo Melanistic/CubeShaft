@@ -1,7 +1,12 @@
 package com.naronco.cubeshaft.gui;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -23,6 +28,18 @@ public class MenuControls extends Menu
 	{
 		if(button.id == 0)
 		{
+			try {
+			File dir = new File("data");
+			dir.mkdir();
+			File f = new File(dir,"config.dat");
+			OutputStream out = new FileOutputStream(f);
+			Properties p = new Properties();
+			KeyManager.saveKeys(p);
+			p.store(out, "");
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+			
 			game.setMenu(new StartMenu());
 		}
 	}

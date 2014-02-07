@@ -3,6 +3,7 @@ package com.naronco.cubeshaft;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 
 import org.lwjgl.input.Keyboard;
 
@@ -54,10 +55,35 @@ public class KeyManager
 	{
 		keys.put(key, keyDef.get(key));
 	}
+	
 	public static List<String> getNames()
 	{
 		return names;
 	}
+	
+	public static void saveKeys(Properties p)
+	{
+		for(String key : names)
+		{
+			if(!isDefault(key))
+			{
+				p.setProperty(key, Integer.toString(getKey(key)) );
+			}
+		}
+		
+	}
+	
+	public static void loadKeys(Properties p)
+	{
+		for(String key : names)
+		{
+			if(p.containsKey(key))
+			{
+				setKey(key, Integer.valueOf(key));
+			}
+		}
+	}
+	
 	
 /**
 Shado47:

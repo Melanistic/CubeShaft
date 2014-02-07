@@ -14,9 +14,11 @@ import static org.lwjgl.util.glu.GLU.*;
 
 import java.awt.Canvas;
 import java.io.File;
+import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
@@ -480,7 +482,17 @@ public class Cubeshaft {
 
 			lightPosition = BufferUtils.createFloatBuffer(4);
 			lightPosition.put(1.0f).put(1.0f).put(1.0f).put(0.0f).flip();
-
+			
+			File dir = new File("data");
+			File f = new File(dir,"config.dat");
+			if(f.exists())
+			{
+				FileInputStream in = new FileInputStream(f);
+				Properties p = new Properties();
+				p.load(in);
+				KeyManager.loadKeys(p);
+			}
+			
 			guiText = new TextRenderer("/default.png");
 			init();
 
