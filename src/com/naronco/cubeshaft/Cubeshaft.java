@@ -341,7 +341,8 @@ public class Cubeshaft {
 
 	public static Cubeshaft game;
 	public static TickHandler ticker = new TickHandler();
-
+	public static Properties props = new Properties();
+	
 	/**
 	 * how often the game updates per second
 	 */
@@ -488,9 +489,18 @@ public class Cubeshaft {
 			if(f.exists())
 			{
 				FileInputStream in = new FileInputStream(f);
-				Properties p = new Properties();
-				p.load(in);
-				KeyManager.loadKeys(p);
+				props = new Properties();
+				props.load(in);
+				KeyManager.loadKeys(props);
+			}
+			if(!props.containsKey("player"))
+			{
+				String s = Integer.toHexString((int)System.currentTimeMillis() % 16777215);
+				while(s.length()<6)
+				{
+					s = "0" + s;
+				}
+				props.setProperty("player", "Player"+s);
 			}
 			
 			guiText = new TextRenderer("/default.png");
@@ -516,7 +526,7 @@ public class Cubeshaft {
 		level = new Level();
 		lightShader = new Shader("light");
 		basicColorShader = new Shader("basiccolor");
-		player = new Player(level);
+		player = new Player(level, props.getProperty("players"));
 		levelRenderer = new LevelRenderer(level);
 		particleEngine = new ParticleEngine();
 		levelManager = new LevelIO(this);
@@ -1064,7 +1074,7 @@ public class Cubeshaft {
 	public void tryToQuit() {
 		System.exit(0);
 	}
-
+	
 	public static void main(String[] args) {
 		game = new Cubeshaft(null, 854, 480, false);
 		new PluginManager().load(new File("run"));

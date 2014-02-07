@@ -3,12 +3,16 @@ package com.naronco.cubeshaft.gui;
 import static org.lwjgl.opengl.GL11.*;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Comparator;
 
 import org.lwjgl.input.Mouse;
 
+import com.naronco.cubeshaft.KeyManager;
 import com.naronco.cubeshaft.render.Tesselator;
 import com.naronco.cubeshaft.render.TextureLoader;
 
@@ -33,7 +37,18 @@ public class StartMenu extends Menu {
 		{
 			this.game.setMenu(new MenuOptions());
 		}
-		if (b.id == 4) {
+		if (b.id == 4) 
+		{
+			try {
+			File dir = new File("data");
+			dir.mkdir();
+			File f = new File(dir,"config.dat");
+			OutputStream out = new FileOutputStream(f);
+			KeyManager.saveKeys(game.props);
+			game.props.store(out, "");
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
 			this.game.tryToQuit();
 		}
 	}

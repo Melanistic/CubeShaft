@@ -33,9 +33,8 @@ public class MenuControls extends Menu
 			dir.mkdir();
 			File f = new File(dir,"config.dat");
 			OutputStream out = new FileOutputStream(f);
-			Properties p = new Properties();
-			KeyManager.saveKeys(p);
-			p.store(out, "");
+			KeyManager.saveKeys(game.props);
+			game.props.store(out, "");
 			} catch(IOException e) {
 				e.printStackTrace();
 			}

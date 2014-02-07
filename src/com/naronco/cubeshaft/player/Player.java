@@ -9,6 +9,7 @@ package com.naronco.cubeshaft.player;
 import static org.lwjgl.opengl.GL11.*;
 
 import com.naronco.cubeshaft.Entity;
+import com.naronco.cubeshaft.INamedEntity;
 import com.naronco.cubeshaft.ItemEntity;
 import com.naronco.cubeshaft.level.Level;
 import com.naronco.cubeshaft.mob.Mob;
@@ -16,14 +17,17 @@ import com.naronco.cubeshaft.model.HumanModel;
 import com.naronco.cubeshaft.phys.HitBox;
 import com.naronco.cubeshaft.render.TextureLoader;
 
-public class Player extends Entity {
+public class Player extends Entity implements INamedEntity
+{
 	public static HumanModel PLAYER_MODEL = new HumanModel();
 	public boolean[] keys = new boolean[10];
 	public Inventory inventory;
+	private String name;
 
-	public Player(Level level) {
+	public Player(Level level, String par1) {
 		
 		super(level);
+		name = par1;
 		this.heightOffset = 1.62f;
 		this.inventory = new Inventory();
 		hitbox = HitBox.getHumanModel(bbHeight, bbWidth);
@@ -143,5 +147,23 @@ public class Player extends Entity {
 		model.leftLeg.render();
 		glPopMatrix();
 		glDisable(GL_TEXTURE_2D);
+	}
+
+	@Override
+	public boolean hasName() 
+	{
+		return true;
+	}
+
+	@Override
+	public String getName() 
+	{
+		return name;
+	}
+
+	@Override
+	public void setName(String s) 
+	{
+		name = s;
 	}
 }
