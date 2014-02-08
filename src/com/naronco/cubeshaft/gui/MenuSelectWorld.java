@@ -47,11 +47,15 @@ public class MenuSelectWorld extends Menu
 			}
 			if(button.id==3)
 			{
+				this.game.setMenu(new LevelGenerateMenu());
+				game.setProgressTitle("Generating Flatmap");
+				game.setProgressText("Generating");
 				Level level = new Level();
 				int x = 256, y = 128, z = 256;
 				byte[] b = new byte[x*y*z];	
 				for(int j = 1;j<x;j++)
 				{
+					game.setProgress((int) ((j/(float)x) * 100.0));
 					for(int l = 1;l<z;l++)
 					{
 						for(int k=0;k<5;k++)
@@ -59,13 +63,14 @@ public class MenuSelectWorld extends Menu
 						////b[(x + l) * z + j] = (byte) Tile.stone.id;
 							int i = (k * x + l) * z + j;
 							if(i>=b.length||i<0)continue;
-							System.out.println("setblock "+j+" "+k+" "+l);
 							b[i] = 1;
 						}
 					}
 						
 				}
 				level.init(getFreeWorldName("flatmap"), x, y, z, b);
+				game.setProgressText("Save");
+				game.setProgress(0);
 				this.game.levelManager.save(level.name, level, game.player);
 				this.game.setMenu(new MenuSelectWorld());
 			}

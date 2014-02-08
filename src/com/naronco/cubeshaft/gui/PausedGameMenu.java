@@ -25,6 +25,7 @@ public class PausedGameMenu extends Menu {
 			//this.game.setInGame();
 			Level l = game.level;
 			game.level = new Level();
+			game.level.init("", 0, 0, 0, new byte[0]);
 			game.levelManager.save(l.name, l, game.player);
 			l = null;
 			System.gc();

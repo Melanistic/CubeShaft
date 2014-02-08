@@ -89,7 +89,7 @@ public class Player extends Entity implements INamedEntity
 			
 			PlayerJumpEvent e = new PlayerJumpEvent(this, jump);
 			TickHandler.EVENT_BUS.postEvent(e);
-			if(!e.isCancled())
+			if(!e.isCancled() && (onGround || inLava || inWater))
 			{
 				this.yd = (float)e.getResult();
 			}

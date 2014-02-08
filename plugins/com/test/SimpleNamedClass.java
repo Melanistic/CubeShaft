@@ -20,6 +20,6 @@ public class SimpleNamedClass {
 	@Init.Event
 	public void onJump(PlayerJumpEvent e)
 	{
-		e.jump *= 2;
+		e.jump *= 1.5;
 	}
 }
