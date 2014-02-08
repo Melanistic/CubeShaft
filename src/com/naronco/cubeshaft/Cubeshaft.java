@@ -341,7 +341,8 @@ public class Cubeshaft {
 
 	public static Cubeshaft game;
 	public static TickHandler ticker = new TickHandler();
-	public static Properties props = new Properties();
+	public Properties props = new Properties();
+	public PluginManager plugin = new PluginManager();
 	
 	/**
 	 * how often the game updates per second
@@ -502,6 +503,9 @@ public class Cubeshaft {
 				}
 				props.setProperty("player", "Player"+s);
 			}
+			File f2 = new File("run");
+			f2.mkdir();
+			plugin.load(f2);
 			
 			guiText = new TextRenderer("/default.png");
 			init();
@@ -526,7 +530,7 @@ public class Cubeshaft {
 		level = new Level();
 		lightShader = new Shader("light");
 		basicColorShader = new Shader("basiccolor");
-		player = new Player(level, props.getProperty("players"));
+		player = new Player(level, props.getProperty("player"));
 		levelRenderer = new LevelRenderer(level);
 		particleEngine = new ParticleEngine();
 		levelManager = new LevelIO(this);
@@ -1077,7 +1081,6 @@ public class Cubeshaft {
 	
 	public static void main(String[] args) {
 		game = new Cubeshaft(null, 854, 480, false);
-		new PluginManager().load(new File("run"));
 		if (game.startup()) {
 			game.running = true;
 

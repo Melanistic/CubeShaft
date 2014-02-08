@@ -25,7 +25,7 @@ public class MenuPlayerEdit extends Menu
 			name = game.props.getProperty("player");
 			
 		drawString("Player Name:", (width-TextRenderer.getTextLength("Player Name:")) /2, height/3, 0xffffff);
-		drawString(name + (edit?"_":""), (width - TextRenderer.getTextLength(name))/2, height/3+40, 0x00aaaa);
+		drawString(name + (edit?"_":""), (width - TextRenderer.getTextLength(name))/2, height/3+40, edit ? 0xaaaaaa : 0x00aaaa);
 		super.render(xMouse, yMouse);
 	}
 	
@@ -54,7 +54,12 @@ public class MenuPlayerEdit extends Menu
 		{
 			if(keyIndex == Keyboard.KEY_BACK)
 			{
-				name = name.substring(0, name.length()-1);
+				if(name.length()>0)
+					name = name.substring(0, name.length()-1);
+			}
+			else if(keyIndex == Keyboard.KEY_RETURN)
+			{
+				buttonClicked(b);
 			}
 			else
 				name+=c;
