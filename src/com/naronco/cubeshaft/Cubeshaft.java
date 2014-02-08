@@ -503,7 +503,7 @@ public class Cubeshaft {
 				}
 				props.setProperty("player", "Player"+s);
 			}
-			File f2 = new File("run");
+			File f2 = new File("plugins");
 			f2.mkdir();
 			plugin.load(f2);
 			
