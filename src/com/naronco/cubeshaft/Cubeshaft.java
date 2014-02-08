@@ -829,6 +829,7 @@ public class Cubeshaft {
 		if (needsUpdate) {
 			for (int i = 0; i < levelRenderer.chunkCache.length; i++) {
 				Chunk c = levelRenderer.chunkCache[i];
+				if(c == null)continue;
 				float viewDist = 256 / (1 << levelRenderer.viewDistance);
 				if (c.distToPlayer(player) < viewDist * viewDist) {
 					c.clip(frustumCuller);

@@ -1,9 +1,12 @@
-package com.melanistics;
+package com.melanistics.packet;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.GZIPInputStream;
+
+import com.melanistics.DataSave;
+import com.melanistics.DataSave.xmlIO;
 
 public class PacketDataSave extends Packet
 {

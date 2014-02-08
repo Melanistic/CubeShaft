@@ -9,6 +9,7 @@ import org.lwjgl.input.Mouse;
 
 import com.naronco.cubeshaft.level.Level;
 import com.naronco.cubeshaft.level.generator.LevelGenerator;
+import com.naronco.cubeshaft.level.tile.Tile;
 
 public class MenuSelectWorld extends Menu 
 {	
@@ -20,6 +21,8 @@ public class MenuSelectWorld extends Menu
 		this.buttons.add(new Button(0, (this.width - 200) / 2 - 300, 40, 200, 40, "New World"));
 		this.buttons.add(new Button(1, (this.width - 200) / 2 + 0  , 40, 200, 40, "Delete World"));
 		this.buttons.add(new Button(2, (this.width - 200) / 2 + 300, 40, 200, 40, "Play World"));
+		
+		this.buttons.add(new Button(3, (this.width - 200) / 2 - 300, 90, 200, 40, "Flat World"));
 	}
 	
 	@Override
@@ -33,7 +36,7 @@ public class MenuSelectWorld extends Menu
 				
 				LevelGenerator generator = new LevelGenerator(this.game);
 				Level level = new Level();
-				generator.generate(getFreeWorldName(), level, 512, 128, 512);
+				generator.generate(getFreeWorldName("new world"), level, 512, 128, 512);
 				this.game.levelManager.save(level.name, level, game.player);
 				
 				//this.game.generateNewLevel();
@@ -41,6 +44,30 @@ public class MenuSelectWorld extends Menu
 				
 				
 				
+			}
+			if(button.id==3)
+			{
+				Level level = new Level();
+				int x = 256, y = 128, z = 256;
+				byte[] b = new byte[x*y*z];	
+				for(int j = 1;j<x;j++)
+				{
+					for(int l = 1;l<z;l++)
+					{
+						for(int k=0;k<5;k++)
+						{
+						////b[(x + l) * z + j] = (byte) Tile.stone.id;
+							int i = (k * x + l) * z + j;
+							if(i>=b.length||i<0)continue;
+							System.out.println("setblock "+j+" "+k+" "+l);
+							b[i] = 1;
+						}
+					}
+						
+				}
+				level.init(getFreeWorldName("flatmap"), x, y, z, b);
+				this.game.levelManager.save(level.name, level, game.player);
+				this.game.setMenu(new MenuSelectWorld());
 			}
 			if(button.id == 2)
 			{
@@ -82,13 +109,13 @@ public class MenuSelectWorld extends Menu
 				f[selected].delete();
 				selected = -1;
 			}
+			
 		}
 		
 	}
 	
-	private String getFreeWorldName()
+	private String getFreeWorldName(String defWorld)
 	{
-		String defWorld = "new world";
 		File worlds = new File("world");
 		while(new File(worlds,defWorld+".csworld").exists())
 			defWorld += "-";

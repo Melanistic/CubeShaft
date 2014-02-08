@@ -1,4 +1,4 @@
-package com.melanistics;
+package com.melanistics.packet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,6 +6,8 @@ import java.util.List;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+
+import com.melanistics.Init;
 
 public class PacketManager 
 {
@@ -71,7 +73,7 @@ public class PacketManager
 				
 				classes.put(m, o);
 				
-				System.out.println("register "+m);
+				System.out.println("register PacketListener "+m);
 			}
 		}
 		

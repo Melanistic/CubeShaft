@@ -1,14 +1,21 @@
 package com.melanistics;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.melanistics.Init.IInputHandler;
+import com.melanistics.event.Event;
+import com.melanistics.event.EventHandler;
 
-public class TickHandler {
+public class TickHandler 
+{	
+	public static EventHandler EVENT_BUS = new EventHandler();
+	
 	private List<Runnable> run = new ArrayList<>();
 	private List<IInputHandler> input = new ArrayList<>();
-
+		
 	public void Tick() {
 		for (int i = 0; i < run.size(); i++) {
 			run.get(i).run();
@@ -28,5 +35,7 @@ public class TickHandler {
 	public void addInputHandler(IInputHandler par1) {
 		input.add(par1);
 	}
+	
+	
 
 }

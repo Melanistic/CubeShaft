@@ -1,4 +1,4 @@
-package com.melanistics;
+package com.melanistics.packet;
 
 import java.io.InputStream;
 import java.io.OutputStream;

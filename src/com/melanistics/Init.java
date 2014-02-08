@@ -28,6 +28,13 @@ public class Init {
 	public @interface Packet {
 		
 	}
+	
+	@Documented
+	@Retention(value = RetentionPolicy.RUNTIME)
+	@Target(value = { ElementType.METHOD })
+	public @interface Event {
+		
+	}
 
 	@Gui(ID = 0)
 	public interface IInputHandler {

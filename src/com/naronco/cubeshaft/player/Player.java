@@ -8,6 +8,8 @@ package com.naronco.cubeshaft.player;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import com.melanistics.TickHandler;
+import com.melanistics.event.PlayerJumpEvent;
 import com.naronco.cubeshaft.Entity;
 import com.naronco.cubeshaft.INamedEntity;
 import com.naronco.cubeshaft.ItemEntity;
@@ -73,13 +75,23 @@ public class Player extends Entity implements INamedEntity
 			xa -= 1.0f;
 		if (this.keys[3])
 			xa += 1.0f;
-		if (this.keys[4]) {
-			if (inWater) {
-				yd += 0.01;
-			} else if (inLava) {
-				yd += 0.01;
-			} else if (onGround) {
-				this.yd = 0.23f;
+		if (this.keys[4]) 
+		{		
+			float jump = yd;
+			if (inWater) 		
+				jump += 0.01;
+			
+			else if (inLava) 	
+				jump += 0.01;
+			
+			else if (onGround) 	
+				jump = 0.23f;
+			
+			PlayerJumpEvent e = new PlayerJumpEvent(this, jump);
+			TickHandler.EVENT_BUS.postEvent(e);
+			if(!e.isCancled())
+			{
+				this.yd = (float)e.getResult();
 			}
 		}
 		float speed = 0.007f;
