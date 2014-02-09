@@ -498,7 +498,7 @@ public class Cubeshaft {
 			if(f.exists())
 			{
 				FileInputStream in = new FileInputStream(f);
-				props = new Properties();
+			//	props = new Properties();
 				props.load(in);
 				KeyManager.loadKeys(props);
 			}

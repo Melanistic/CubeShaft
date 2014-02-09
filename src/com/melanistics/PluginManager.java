@@ -62,9 +62,15 @@ public class PluginManager
 					plugins.add(c);
 					Init.Plugin plug = c.getAnnotation(Init.Plugin.class);
 					String id = plug.pluginID();
-					boolean b = Boolean.valueOf(props.getProperty(id));
-					System.out.println(b=true);
-					if(b)
+					String s2 = props.getProperty(id);
+					System.out.println(s2);
+					if(s2==null)
+					{
+						props.setProperty(id, "true");
+						System.out.println(props);
+					}
+					boolean b = Boolean.valueOf(s2);
+					if(b || s2==null)
 					{	
 						Object o = c.newInstance();
 						state.put(c, EnumPluginState.LOADED);
@@ -81,6 +87,7 @@ public class PluginManager
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 	private List<String> loadfromZip(File f) throws Exception 
