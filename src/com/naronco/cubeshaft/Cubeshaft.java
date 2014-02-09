@@ -288,7 +288,15 @@ public class Cubeshaft {
 										player.inventory.items.remove(player.inventory.selectedSlot);
 									}
 								}
-								
+								if (Keyboard.getEventKey() >= Keyboard.KEY_1 && Keyboard.getEventKey() <= Keyboard.KEY_0) 
+								{
+									player.inventory.selectedSlot = (Keyboard.getEventKey() - Keyboard.KEY_1);
+								}
+								if (Keyboard.getEventKey() == KeyManager.getKey("inventory")) 
+								{
+									pauseGame();
+									setMenu(new MenuInventory(player));
+								}
 
 							}
 							ticker.Input(key, Keyboard.getEventCharacter(), keyState);
@@ -342,7 +350,7 @@ public class Cubeshaft {
 	public static Cubeshaft game;
 	public static TickHandler ticker = new TickHandler();
 	public Properties props = new Properties();
-	public PluginManager plugin = new PluginManager();
+	public PluginManager plugin = new PluginManager(props);
 	
 	/**
 	 * how often the game updates per second

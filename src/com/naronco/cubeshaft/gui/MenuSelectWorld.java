@@ -37,6 +37,9 @@ public class MenuSelectWorld extends Menu
 				LevelGenerator generator = new LevelGenerator(this.game);
 				Level level = new Level();
 				generator.generate(getFreeWorldName("new world"), level, 512, 128, 512);
+				game.player.resetPos();
+				game.setProgressText("Save");
+				game.setProgress(0);
 				this.game.levelManager.save(level.name, level, game.player);
 				
 				//this.game.generateNewLevel();
@@ -48,27 +51,10 @@ public class MenuSelectWorld extends Menu
 			if(button.id==3)
 			{
 				this.game.setMenu(new LevelGenerateMenu());
-				game.setProgressTitle("Generating Flatmap");
-				game.setProgressText("Generating");
+				LevelGenerator generator = new LevelGenerator(this.game);
 				Level level = new Level();
-				int x = 256, y = 128, z = 256;
-				byte[] b = new byte[x*y*z];	
-				for(int j = 1;j<x;j++)
-				{
-					game.setProgress((int) ((j/(float)x) * 100.0));
-					for(int l = 1;l<z;l++)
-					{
-						for(int k=0;k<5;k++)
-						{
-						////b[(x + l) * z + j] = (byte) Tile.stone.id;
-							int i = (k * x + l) * z + j;
-							if(i>=b.length||i<0)continue;
-							b[i] = 1;
-						}
-					}
-						
-				}
-				level.init(getFreeWorldName("flatmap"), x, y, z, b);
+				generator.generateFlatmap(getFreeWorldName("flatmap"), level, 256, 128, 256);
+				game.player.resetPos();
 				game.setProgressText("Save");
 				game.setProgress(0);
 				this.game.levelManager.save(level.name, level, game.player);
@@ -76,6 +62,8 @@ public class MenuSelectWorld extends Menu
 			}
 			if(button.id == 2)
 			{
+				this.game.setMenu(new LevelGenerateMenu());
+				game.setProgressTitle("Loading World...");
 				File[] f = new File("world").listFiles(new FilenameFilter() {
 
 					@Override
@@ -91,8 +79,9 @@ public class MenuSelectWorld extends Menu
 				});
 				
 				String s = f[selected].getName().replace(".csworld", "");
+				game.setProgressText(s);
 				this.game.levelManager.load(s, this.game.level, this.game.player);
-				game.player.resetPos();
+				//game.player.resetPos();
 				game.setInGame();
 			}
 			if(button.id == 1)
@@ -164,7 +153,7 @@ public class MenuSelectWorld extends Menu
 				s = "> " + s + " <";
 			}
 			int color = 0xffffff;
-			if (200 + 15 * i < ym && ym < 200 + 20 * i + 20) 
+			if (200 + 20 * i < ym && ym < 200 + 20 * i + 20) 
 			{
 				color = 0xffffffaa;
 				if (Mouse.isButtonDown(0)) 

@@ -72,7 +72,8 @@ public class MobSkeleton extends Mob {
 		model.rightLeg.render();
 		model.leftLeg.render();
 		
-		
+		GL11.glColor4f(1, 1, 1, 1);
+		renderQube(0, 0, 0, 2, 2, 2);
 		
 		glPopMatrix();
 		glBindTexture(GL_TEXTURE_2D,

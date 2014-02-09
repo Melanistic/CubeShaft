@@ -6,11 +6,14 @@ import com.naronco.cubeshaft.Cubeshaft;
 import com.naronco.cubeshaft.entity.TileEntity;
 import com.naronco.cubeshaft.level.tile.Tile;
 
-public class SimpleNamedClass {
+@Init.Plugin(pluginID = "jump")
+public class SimpleNamedClass 
+{
 	public static final Tile SimpleNamedTile = new SinpleNamedBlock(30, 7);
 
 	@Init.Start
-	public void SimpleNamedMethode() {
+	public void SimpleNamedMethode() 
+	{
 		System.err.println("I live !!!");
 		//Cubeshaft.game.player.inventory.add(SimpleNamedTile.id);
 		//Cubeshaft.ticker.addRunnable(new UselessClass4());

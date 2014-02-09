@@ -42,11 +42,12 @@ public class Tile {
 	public static final Tile birchwood = new WoodTile(23, 24);
 	public static final Tile Palmwood = new WoodTile(24, 26);
 	public static final Tile clay = new WoodTile(25, 28);
-
+	public static final Tile bedrock = new BedrockTile(26, 6).setHardness(100.0F);
 
 
 	public int texIndex;
 	public final int id;
+	public float hardness;
 	public float x0, y0, z0;
 	public float x1, y1, z1;
 
@@ -54,6 +55,12 @@ public class Tile {
 		tiles[id] = this;
 		this.id = id;
 		setBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+	}
+	
+	public Tile setHardness(float f)
+	{
+		hardness = f;
+		return this;
 	}
 
 	public void setBounds(float x0, float y0, float z0, float x1, float y1,

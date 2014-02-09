@@ -310,6 +310,32 @@ public class LevelGenerator {
 		return true;
 	}
 	
+	public void generateFlatmap(String name, Level level, int w, int h, int d)
+	{
+		game.setProgressTitle("Generating Flatmap");
+		game.setProgressText("Generating...");
+		
+		Tile[] tiles = new Tile[]{Tile.bedrock,Tile.stone,Tile.stone,Tile.stone,Tile.dirt,Tile.dirt,Tile.grass};
+		
+		byte[] b = new byte[w*h*d];	
+		for(int j = 1;j<w;j++)
+		{
+			game.setProgress((int) ((j/(float)w) * 100.0));
+			for(int l = 1;l<d;l++)
+			{
+				for(int k=0;k<tiles.length;k++)
+				{
+				////b[(x + l) * z + j] = (byte) Tile.stone.id;
+					int i = (k * w + l) * d + j;
+					if(i>=b.length||i<0)continue;
+					b[i] = (byte) tiles[k].id;
+				}
+			}
+				
+		}
+		level.init(name, w, h, d, b);
+	}
+	
 	private void setProgressText(String text) {
 		LevelGenerateMenu menu=(LevelGenerateMenu)game.menu;
 		menu.setProgressText(text);

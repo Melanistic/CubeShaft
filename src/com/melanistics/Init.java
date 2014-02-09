@@ -17,27 +17,35 @@ public class Init {
 	@Documented
 	@Retention(value = RetentionPolicy.RUNTIME)
 	@Target(value = { ElementType.TYPE })
-	public @interface Gui {
+	public @interface Gui 
+	{
 		public abstract int ID();
-
 	}
 	
 	@Documented
 	@Retention(value = RetentionPolicy.RUNTIME)
 	@Target(value = { ElementType.METHOD })
-	public @interface Packet {
-		
+	public @interface Packet {		
 	}
 	
 	@Documented
 	@Retention(value = RetentionPolicy.RUNTIME)
 	@Target(value = { ElementType.METHOD })
-	public @interface Event {
-		
+	public @interface Event {	
+	}
+	
+	@Documented
+	@Retention(value = RetentionPolicy.RUNTIME)
+	@Target(value = { ElementType.TYPE })
+	public @interface Plugin 
+	{
+		public String pluginID();
+		public String name() default "Plugin";
 	}
 
 	@Gui(ID = 0)
-	public interface IInputHandler {
+	public interface IInputHandler 
+	{
 		public void onKeyInput(int par1, char par2, boolean par3);
 	}
 

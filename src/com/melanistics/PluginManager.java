@@ -7,13 +7,25 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class PluginManager 
 {
-
+	public List<Class<?>> plugins = new ArrayList<Class<?>>();
+	public HashMap<Class<?>, EnumPluginState> state = new HashMap<Class<?>, EnumPluginState>();
+	public HashMap<Class<?>, Object> used = new HashMap<Class<?>, Object>(); 
+	public Properties props;
+	
+	public PluginManager(Properties p)
+	{
+		props = p;
+	}
+	
+	
 	public void load(File f) 
 	{
 		try 
@@ -45,7 +57,26 @@ public class PluginManager
 
 			for (Class<?> c : l) 
 			{
-				invoke(c);
+				if(c.isAnnotationPresent(Init.Plugin.class))
+				{
+					plugins.add(c);
+					Init.Plugin plug = c.getAnnotation(Init.Plugin.class);
+					String id = plug.pluginID();
+					boolean b = Boolean.valueOf(props.getProperty(id));
+					System.out.println(b=true);
+					if(b)
+					{	
+						Object o = c.newInstance();
+						state.put(c, EnumPluginState.LOADED);
+						invoke(o);
+						used.put(c, o);
+					}
+					else
+					{
+						state.put(c, EnumPluginState.DISABLED);
+					}
+				}
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -137,8 +168,9 @@ public class PluginManager
 		return l;
 	}
 
-	private static void invoke(Class<?> c) 
+	private void invoke(Object o) 
 	{
+		Class<?> c = o.getClass();
 		Method[] m = c.getDeclaredMethods();
 		for (int i = 0; i < m.length; i++) 
 		{
@@ -148,9 +180,10 @@ public class PluginManager
 				System.out.println("Try to run [" + run + "] at [" + c + "]");
 				
 				try {
-					run.invoke(c.newInstance());
+					run.invoke(o);
 				} catch (Exception e) {
 					System.out.println("Failed !!!");
+					state.put(c, EnumPluginState.ERROR);
 					e.printStackTrace();
 				} 
 				

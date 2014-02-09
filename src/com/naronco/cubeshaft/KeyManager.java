@@ -22,6 +22,7 @@ public class KeyManager
 		registerKeyBinding("jump", Keyboard.KEY_SPACE);
 		
 		registerKeyBinding("drop", Keyboard.KEY_Q);
+		registerKeyBinding("inventory", Keyboard.KEY_E);
 	}
 	
 	public static void registerKeyBinding(String keyname, int keydefault)

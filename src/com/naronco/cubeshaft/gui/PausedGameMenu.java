@@ -25,7 +25,7 @@ public class PausedGameMenu extends Menu {
 			//this.game.setInGame();
 			Level l = game.level;
 			game.level = new Level();
-			game.level.init("", 0, 0, 0, new byte[0]);
+			game.level.init("", 1, 1, 1, new byte[1]);
 			game.levelManager.save(l.name, l, game.player);
 			l = null;
 			System.gc();
@@ -46,7 +46,7 @@ public class PausedGameMenu extends Menu {
 	public void render(int xMouse, int yMouse) {
 		fill(0, 0, width, height, 0xa0050500);
 		drawString("Game menu", (this.width - TextRenderer.getTextLength("Game menu")) / 2, 40, 0xfffffff);
-		drawString("y: " + game.player.y, 10, 20, 0xeeeeee);
+		drawString("y: " + game.player.y, 10, 30, 0xeeeeee);
 		super.render(xMouse, yMouse);
 	}
 }
