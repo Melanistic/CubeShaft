@@ -16,8 +16,11 @@ import java.util.zip.ZipInputStream;
 public class PluginManager 
 {
 	public List<Class<?>> plugins = new ArrayList<Class<?>>();
-	public HashMap<Class<?>, EnumPluginState> state = new HashMap<Class<?>, EnumPluginState>();
-	public HashMap<Class<?>, Object> used = new HashMap<Class<?>, Object>(); 
+	
+	private HashMap<Class<?>, EnumPluginState> state = new HashMap<Class<?>, EnumPluginState>();
+	private HashMap<Class<?>, Object> used = new HashMap<Class<?>, Object>(); 
+	private HashMap<String, Class<?>> pluginID = new HashMap<String, Class<?>>();
+	
 	public Properties props;
 	
 	public PluginManager(Properties p)
@@ -76,6 +79,7 @@ public class PluginManager
 						state.put(c, EnumPluginState.LOADED);
 						invoke(o);
 						used.put(c, o);
+						pluginID.put(id, c);
 					}
 					else
 					{
@@ -196,5 +200,31 @@ public class PluginManager
 				
 			}
 		}
+	}
+	
+	
+	public EnumPluginState getPluginState(Class<?> c)
+	{
+		return state.get(c);
+	}
+	
+	public Object getPlugin(Class<?> c)
+	{
+		return used.get(c);
+	}
+	
+	public Class<?> getPluginByID(String id)
+	{
+		return pluginID.get(id);
+	}
+	
+	public String getPluginID(Class<?> c)
+	{
+		return c.getAnnotation(Init.Plugin.class).pluginID();
+	}
+	
+	public String getPluginName(Class<?> c)
+	{
+		return c.getAnnotation(Init.Plugin.class).name();
 	}
 }

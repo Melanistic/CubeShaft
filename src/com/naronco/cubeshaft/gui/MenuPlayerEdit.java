@@ -19,13 +19,19 @@ public class MenuPlayerEdit extends Menu
 	@Override
 	public void render(int xMouse, int yMouse) 
 	{
-		fill(0, 0, width, height, 0xffddddff);
+		fill(0, 0, width, height, 0xff442222);
+		
+		int h = 80;
+		
+		fill(0, 0, width, h, 0xff331111);
+		fill(0, height-h, width, height, 0xff331111);
 		
 		if(!edit)
 			name = game.props.getProperty("player");
 			
 		drawString("Player Name:", (width-TextRenderer.getTextLength("Player Name:")) /2, height/3, 0xffffff);
 		drawString(name + (edit?"_":""), (width - TextRenderer.getTextLength(name))/2, height/3+40, edit ? 0xaaaaaa : 0x00aaaa);
+		
 		super.render(xMouse, yMouse);
 	}
 	

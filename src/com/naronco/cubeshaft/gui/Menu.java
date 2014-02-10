@@ -41,10 +41,19 @@ public class Menu {
 		}
 	}
 
-	protected void keyType(char c, int keyIndex) {
-		if (keyIndex == Keyboard.KEY_ESCAPE) {
-			this.game.setMenu(null);
-			this.game.setInGame();
+	protected void keyType(char c, int keyIndex) 
+	{
+		if (keyIndex == Keyboard.KEY_ESCAPE) 
+		{
+			if(this instanceof PausedGameMenu)
+			{
+				this.game.setMenu(null);
+				this.game.setInGame();
+			}
+			else
+			{
+				this.game.setMenu(new StartMenu());
+			}
 		}
 	}
 

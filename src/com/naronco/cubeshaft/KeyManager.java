@@ -68,7 +68,7 @@ public class KeyManager
 		{
 			if(!isDefault(key))
 			{
-				p.setProperty(key, Keyboard.getKeyName( getKey(key) ));
+				p.setProperty("key_"+key, Keyboard.getKeyName( getKey(key) ));
 			}
 		}
 		
@@ -78,9 +78,9 @@ public class KeyManager
 	{
 		for(String key : names)
 		{
-			if(p.containsKey(key))
+			if(p.containsKey("key_"+key))
 			{
-				setKey(key, Keyboard.getKeyIndex( p.getProperty(key) ));
+				setKey(key, Keyboard.getKeyIndex( p.getProperty("key_"+key) ));
 			}
 		}
 	}
