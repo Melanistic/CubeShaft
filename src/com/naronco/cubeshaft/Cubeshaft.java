@@ -34,7 +34,7 @@ import util.Vec3;
 
 import com.melanistics.PluginManager;
 import com.melanistics.TickHandler;
-import com.naronco.cubeshaft.gui.LevelGenerateMenu;
+import com.naronco.cubeshaft.gui.ProgressMenu;
 import com.naronco.cubeshaft.gui.Menu;
 import com.naronco.cubeshaft.gui.PausedGameMenu;
 import com.naronco.cubeshaft.gui.StartMenu;
@@ -1073,15 +1073,15 @@ public class Cubeshaft {
 	}
 
 	public void setProgressTitle(String title) {
-		((LevelGenerateMenu) menu).setProgressTitle(title);
+		((ProgressMenu) menu).setProgressTitle(title);
 	}
 
 	public void setProgressText(String text) {
-		((LevelGenerateMenu) menu).setProgressText(text);
+		((ProgressMenu) menu).setProgressText(text);
 	}
 
 	public void setProgress(int progress) {
-		((LevelGenerateMenu) menu).setProgress(progress);
+		((ProgressMenu) menu).setProgress(progress);
 	}
 
 	public void tryToQuit() {

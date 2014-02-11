@@ -12,7 +12,7 @@ package com.naronco.cubeshaft.level.generator;
 import java.util.Random;
 
 import com.naronco.cubeshaft.Cubeshaft;
-import com.naronco.cubeshaft.gui.LevelGenerateMenu;
+import com.naronco.cubeshaft.gui.ProgressMenu;
 import com.naronco.cubeshaft.level.Level;
 import com.naronco.cubeshaft.level.generator.algorithm.IGenerator;
 import com.naronco.cubeshaft.level.generator.algorithm.SimplexGenerator;
@@ -337,12 +337,12 @@ public class LevelGenerator {
 	}
 	
 	private void setProgressText(String text) {
-		LevelGenerateMenu menu=(LevelGenerateMenu)game.menu;
+		ProgressMenu menu=(ProgressMenu)game.menu;
 		menu.setProgressText(text);
 	}
 
 	private void setProgress(int progress) {
-		LevelGenerateMenu menu=(LevelGenerateMenu)game.menu;
+		ProgressMenu menu=(ProgressMenu)game.menu;
 		menu.setProgress(progress);
 	}
 }

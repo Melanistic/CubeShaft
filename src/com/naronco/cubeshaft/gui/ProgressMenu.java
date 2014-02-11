@@ -10,7 +10,8 @@ import com.naronco.cubeshaft.level.tile.Tile;
 import com.naronco.cubeshaft.render.Tesselator;
 import com.naronco.cubeshaft.render.TextureLoader;
 
-public class LevelGenerateMenu extends Menu {
+public class ProgressMenu extends Menu 
+{
 	private String progressTitle, progressText;
 
 	@Override

@@ -32,7 +32,7 @@ public class MenuSelectWorld extends Menu
 		{
 			if(button.id == 0)
 			{
-				this.game.setMenu(new LevelGenerateMenu());
+				this.game.setMenu(new ProgressMenu());
 				
 				LevelGenerator generator = new LevelGenerator(this.game);
 				Level level = new Level();
@@ -50,7 +50,7 @@ public class MenuSelectWorld extends Menu
 			}
 			if(button.id==3)
 			{
-				this.game.setMenu(new LevelGenerateMenu());
+				this.game.setMenu(new ProgressMenu());
 				LevelGenerator generator = new LevelGenerator(this.game);
 				Level level = new Level();
 				generator.generateFlatmap(getFreeWorldName("flatmap"), level, 256, 128, 256);
@@ -62,7 +62,7 @@ public class MenuSelectWorld extends Menu
 			}
 			if(button.id == 2)
 			{
-				this.game.setMenu(new LevelGenerateMenu());
+				this.game.setMenu(new ProgressMenu());
 				game.setProgressTitle("Loading World...");
 				File[] f = new File("world").listFiles(new FilenameFilter() {
 
