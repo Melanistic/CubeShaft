@@ -181,6 +181,8 @@ public class Level {
 	public int getTile(int x, int y, int z) {
 		if (x < 0 || y < 0 || z < 0 || x >= width || y >= height || z >= depth)
 			return 0;
+		if(tiles == null)
+			return 0;
 		return tiles[(y * width + z) * depth + x] & 0xff;
 	}
 	
