@@ -288,6 +288,10 @@ public class Cubeshaft {
 										player.inventory.items.remove(player.inventory.selectedSlot);
 									}
 								}
+								if(Keyboard.getEventKey() == Keyboard.KEY_U) // Up!
+								{
+									player.y = level.getHeigh((int)player.x, (int)player.z) + 10;
+								}
 								if (Keyboard.getEventKey() >= Keyboard.KEY_1 && Keyboard.getEventKey() <= Keyboard.KEY_0) 
 								{
 									player.inventory.selectedSlot = (Keyboard.getEventKey() - Keyboard.KEY_1);
